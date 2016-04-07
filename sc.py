@@ -1,5 +1,6 @@
 # File that stores superconcentrator implementations
 
+# function that is used in PTC generation
 def gen(r, addend):
     return butterfly(r, addend)
 
