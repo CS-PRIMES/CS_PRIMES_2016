@@ -57,10 +57,3 @@ def PTC(r, addend):
             parent1.append(addend + i)
 
         return parent1, parent2
-
-def display():
-    a, b = PTC(3, 0)
-    for i in range(len(a)):
-        print i, a[i], b[i]
-
-display()
