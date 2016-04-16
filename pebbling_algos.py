@@ -12,6 +12,7 @@ def depth_first_pebble(P, v):
 def dfp(P, v, S):
 	if(P.is_source(v)):
 		P.add_pebble(v)
+		return
 	for u in P.get_parents(v):
 		if(not P.is_pebbled(u)):
 			dfp(P, u, utils.union(S, P.get_parents(v)))

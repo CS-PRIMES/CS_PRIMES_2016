@@ -12,6 +12,8 @@ class PebbleGraph:
 		return self.pebble[v]
 
 	def remove_pebble(self, v):
+		if(self.is_pebbled(v)):
+			print "Pebble removed from node "+str(v)
 		self.pebble[v] = False
 
 	def remove_pebbles(self, S):
@@ -23,12 +25,16 @@ class PebbleGraph:
 
 	def add_pebble(self, v):
 		if(self.is_source(v)):
+			if(not self.is_pebbled(v)):
+				print "Pebble added to node "+str(v)
 			self.pebble[v] = True
 			return
 		if(self.is_pebbled(self.B[v][0]) and self.is_pebbled(self.B[v][1])):
+			if(not self.is_pebbled(v)):
+				print "Pebble added to node "+str(v)
 			self.pebble[v] = True
 			return
-		return -1
+		print "Error: attempted to pebble node "+str(v)+" without pebbling both parents"
 
 	def is_source(self, v):
 		return (self.B[v][0] == -1 and self.B[v][1] == -1)
