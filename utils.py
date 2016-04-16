@@ -23,6 +23,6 @@ def union(a, b):
 def complement1(a, S):
 	b = []
 	for i in range(a):
-		if(i not in s):
+		if(i not in S):
 			b.append(i)
 	return b

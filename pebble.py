@@ -8,15 +8,15 @@ class PebbleGraph:
 		self.B = utils.tpl_to_adj(ptc.PTC(r,0))
 		self.pebble = [False]*len(self.B)
 
-	def pebbled(self, v):
+	def is_pebbled(self, v):
 		return self.pebble[v]
 
 	def remove_pebble(self, v):
-		self.pebble[v] = false
+		self.pebble[v] = False
 
 	def remove_pebbles(self, S):
 		for v in S:
-			self.remove_pebble(V)
+			self.remove_pebble(v)
 
 	def reset(self):
 		self.pebble = [False]*len(self.B)
@@ -25,7 +25,7 @@ class PebbleGraph:
 		if(self.is_source(v)):
 			self.pebble[v] = True
 			return
-		if(self.pebbled(self.B[v][0]) and self.pebbled(self.B[v][1])):
+		if(self.is_pebbled(self.B[v][0]) and self.is_pebbled(self.B[v][1])):
 			self.pebble[v] = True
 			return
 		return -1
@@ -38,3 +38,9 @@ class PebbleGraph:
 
 	def size(self):
 		return len(self.B)
+
+	def pebble_list(self):
+		return self.pebble
+
+	def graph(self):
+		return self.B
