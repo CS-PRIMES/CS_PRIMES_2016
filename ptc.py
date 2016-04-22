@@ -4,56 +4,56 @@ def PTC(r, addend):
     if r == 1:
         return sc.gen(1, addend)
     else:
-        parent1 = []
-        parent2 = []
+        parents = []
 
         # Adds Sources
         for i in range (2**(r)):
-            parent1.append(-1)
-            parent2.append(-1)
+            parents.append([-1, -1])
 
         # Adds 1st SC copy
-        sc1, sc2 = sc.gen(r-1, addend + len(parent1))
+        sc1 = sc.gen(r-1, addend + len(parents))
         
         for i in range(2**(r-1)):
-            sc1[i] = addend + i
-            sc2[i] = addend + i+2**(r-1);
+            sc1[i][0] = addend + i
+            sc1[i][1] = addend + i+2**(r-1);
         
-        parent1.extend(sc1);
-        parent2.extend(sc2);
+        parents.extend(sc1)
 
         # Adds 1st PTC copy
-        ptc1, ptc2 = PTC(r-1, addend + len(parent1))
+        ptc1 = PTC(r-1, addend + len(parents))
 
         for i in range(2**(r-1)):
-            ptc1[i] = addend + len(parent1) - 2**(r-1) + i
+            ptc1[i][0] = addend + len(parents) - 2**(r-1) + i
 
-        parent1.extend(ptc1)
-        parent2.extend(ptc2)
+        parents.extend(ptc1)
 
         # Adds 2nd PTC copy
-        ptc1, ptc2 = PTC(r-1, addend + len(parent1))
+        ptc1 = PTC(r-1, addend + len(parents))
 
         for i in range(2**(r-1)):
-            ptc1[i] = addend + len(parent1) - 2**(r-1) + i
+            ptc1[i][0] = addend + len(parents) - 2**(r-1) + i
 
-        parent1.extend(ptc1)
-        parent2.extend(ptc2)
+        parents.extend(ptc1)
         
         # Adds 2nd SC copy
-        sc1, sc2 = sc.gen(r-1, addend + len(parent1))
+        sc1 = sc.gen(r-1, addend + len(parents))
 
         for i in range(2**(r-1)):
-            sc1[i] = addend + len(parent1) - 2**(r-1) + i
+            sc1[i][0] = addend + len(parents) - 2**(r-1) + i
 
-        parent1.extend(sc1);
-        parent2.extend(sc2);
-
+        parents.extend(sc1)
+        sofar = len(parents)
+        
         # Adds Sinks
-        for i in range(2**(r)):
-            parent2.append(addend + len(parent1) - 2**(r-1)+ (i % 2**(r-1)))
+        for i in range (2**(r)):
+            parents.append([-1, -1])
         
         for i in range(2**(r)):
-            parent1.append(addend + i)
+            parents[i+sofar][0] = addend + sofar - 2**(r-1)+ (i % 2**(r-1))
+            parents[i+sofar][1] = addend + i
 
-        return parent1, parent2
+        return parents
+
+graph = PTC(3, 0)
+for i in range(len(graph)):
+    print "Parents of " + str(i) + " are " + str(graph[i][0]) + " and " + str(graph[i][1])

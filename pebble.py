@@ -5,7 +5,7 @@ class PebbleGraph:
 	pebble = []
 	B = []
 	def __init__(self, r):
-		self.B = utils.tpl_to_adj(ptc.PTC(r,0))
+		self.B = utils.tpl_to_adj(ptc.PTC(r,0)) # line can be changed
 		self.pebble = [False]*len(self.B)
 
 	def is_pebbled(self, v):

@@ -1,5 +1,5 @@
 # Converts two-parent-list graph storage scheme to adjacency list
-def tpl_to_adj(tpl):
+def tpl_to_adj(tpl): # METHOD CAN BE REMOVED
 	# optional error-throwing mechanism in case the inputs are not of the same length; this really should need to be triggered in any case
 	# if(len(parent1) != len(parent2)):
 	# 	print("Error: input parent lists do not have same length")
