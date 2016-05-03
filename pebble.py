@@ -4,7 +4,7 @@ import hashlib
 import utils
 import ptc
 
-class PebbleGraph:
+class PebbleGraph(object):
     pebble = []       # pebble contains whether or not the pebble is pebbled.
     B = []            # B contains the parents of the pebble.
     pebble_value = [] # pebble_value stores the value of the hash associated with the pebble.
