@@ -18,9 +18,9 @@ class MerkleNode(object):
 
 	def list_leaves(self):
 		if(self.size > 1):
-			return list_leaves(self.left)+", "+list_leaves(self.right)
+			return self.left.list_leaves()+", "+self.right.list_leaves()
 		else:
-			return self.value
+			return str(self.value)
 
 ######################## IGNORE STUFF BELOW ########################
 
