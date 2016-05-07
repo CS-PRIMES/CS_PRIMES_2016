@@ -53,7 +53,3 @@ def PTC(r, addend):
             parents[i+sofar][1] = addend + i
 
         return parents
-
-graph = PTC(3, 0)
-for i in range(len(graph)):
-    print "Parents of " + str(i) + " are " + str(graph[i][0]) + " and " + str(graph[i][1])
