@@ -11,7 +11,7 @@ def depth_first_pebble(P, v):
 
 # Depth-first pebble method as described in page 10 of the PTC paper.
 # B: parent adjacency matrix; v: vertex to be pebbled.
-# I'm not 100% sure what S is but it seems to be a set of all the vertices that call on v to be pebbled
+# I'm not 100% sure what S is but it seems to be a set of all the vertices that call on v to be pebbled...
 def dfp(P, v, S):
     if(P.is_source(v)):
         P.add_pebble(v)
