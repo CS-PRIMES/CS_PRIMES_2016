@@ -2,19 +2,25 @@ import utils
 
 class MerkleNode(object):
 	def __init__(self, leaves, parent=None, prehashed=False):
-		self.size = len(self.leaves)
+		self.size = len(leaves)
 		if(self.size == 1):
 			if prehashed:
-				self.value = data
+				self.value = leaves[0]
 			else:
-				self.value = utils.secure_hash(data).digest()
+				self.value = utils.secure_hash(leaves[0]).digest()
 			self.left = None
 			self.right = None
 			self.parent = self
 		if(self.size > 1):
 			self.left = MerkleNode(leaves[:self.size/2], self, prehashed)
 			self.right = MerkleNode(leaves[self.size/2:], self, prehashed)
-			self.value = utils.secure_hash(self.left.value.decode('hex')+self.right.value.decode('hex')).digest()
+			self.value = utils.secure_hash(self.left.value+self.right.value).digest()
+
+	def list_leaves(self):
+		if(self.size > 1):
+			return list_leaves(self.left)+", "+list_leaves(self.right)
+		else:
+			return self.value
 
 ######################## IGNORE STUFF BELOW ########################
 
@@ -37,7 +43,7 @@ class MerkleTree(object):
 		for leaf in self.leaves:
 			leaf.left, leaf.right, leaf.parent, leaf.sibling, leaf.side = [None]*5
 
-	def _build(self, leaves):
+	#def _build(self, leaves):
 		
 
 class Node(object):
