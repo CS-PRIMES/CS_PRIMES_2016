@@ -5,18 +5,11 @@ import hashlib
 import utils
 import ptc
 
-<<<<<<< HEAD
-class PebbleGraph(object):
-    pebble = []       # pebble contains whether or not the pebble is pebbled.
-    B = []            # B contains the parents of the pebble.
-    pebble_value = [] # pebble_value stores the value of the hash associated with the pebble.
-=======
 class PebbleGraph:
     pebble = shelve.open('pebble.txt')       # pebble contains whether or not the pebble is pebbled.
     B = []                                 # B contains the parents of the pebble.
     pebble_value = shelve.open('pebble_value.txt') # pebble_value stores the value of the hash associated with the pebble.
 
->>>>>>> bf548130dd3e6f459823052eb762284f3b389af0
     def __init__(self, r):
         self.B = ptc.PTC(r,0) # line can be changed
         for i in range (len(self.B)):
