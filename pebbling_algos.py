@@ -17,7 +17,12 @@ def dfp(P, v, S):
         P.add_pebble(v)
         return
     for u in P.get_parents(v):
-        if(not P.is_pebbled(u)):
-            dfp(P, u, utils.union(S, P.get_parents(v)))
+        if (u != -1): # I added this because if u = -1 then P doesn't have two parents.
+            if(not P.is_pebbled(u)):
+                dfp(P, u, utils.union(S, P.get_parents(v)))
     P.add_pebble(v)
     P.remove_pebbles(utils.complement1(P.size(), S))
+
+def trivial_pebble(graph):
+    for i in range (len(graph.B)):
+        graph.add_pebble(i)
