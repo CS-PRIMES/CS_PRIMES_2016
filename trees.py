@@ -22,6 +22,11 @@ class MerkleNode(object):
 		else:
 			return str(self.value)
 
+	def root(self):
+		return self.value
+
+#i need to implement merkle path next
+
 ######################## IGNORE STUFF BELOW ########################
 
 class MerkleTree(object):
