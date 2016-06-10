@@ -27,4 +27,6 @@ def complement1(a, S):
     return b
 
 def secure_hash(a):
-    return hashlib.sha224(a)
+    x = hashlib.sha224()
+    x.update(a)
+    return x.digest()
