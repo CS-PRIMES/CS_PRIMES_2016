@@ -13,7 +13,7 @@ class PebbleGraph:
     def __init__(self, r):
         self.B = ptc.PTC(r,0) # line can be changed
         for i in range (len(self.B)):
-            self.pebble[str(i)] = False
+            self.pebble[str(i)] = False # need to talk about this in meeting
             self.pebble_value[str(i)] = -1
 
     def close_files(self):
