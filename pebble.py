@@ -13,8 +13,8 @@ class PebbleGraph:
     def __init__(self, r):
         self.B = ptc.PTC(r,0) # line can be changed
         for i in range (len(self.B)):
-            self.pebble[str(i)] = [False]
-            self.pebble_value[str(i)] = [-1]
+            self.pebble[str(i)] = False
+            self.pebble_value[str(i)] = -1
 
     def close_files(self):
         self.d.close()
@@ -28,6 +28,7 @@ class PebbleGraph:
         if(self.is_pebbled(v)):
             print "Pebble removed from node "+str(v)
         self.pebble[str(v)] = False
+        # John can you add code that will actually release the stored value of this vertex from memory to free up some space?
 
     def remove_pebbles(self, S):
         for v in S:
@@ -39,7 +40,7 @@ class PebbleGraph:
     def add_pebble(self, v):
         if(self.is_source(v)):
             if(not self.is_pebbled(v)):
-                self.pebble_value[str(v)] = v
+                self.pebble_value[str(v)] = utils.secure_hash(str(v))
                 self.pebble[str(v)] = True                
                 print "Pebble added to node "+str(v)
             return

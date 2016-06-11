@@ -21,4 +21,4 @@ def dfp(P, v, S):
         if(not P.is_pebbled(u)):
             dfp(P, u, utils.union(S, P.get_parents(v)))
     P.add_pebble(v)
-    # P.remove_pebbles(utils.complement1(P.size(), S))
+    P.remove_pebbles(utils.complement1(P.size(), S))
