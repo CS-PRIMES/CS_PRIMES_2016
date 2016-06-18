@@ -4,6 +4,8 @@ import datetime
 import sys
 import re
 
+# Make sure there is a folder called test_logs in this directory.  That is where the logs will be saved.
+
 # Feel free to add more test functions
 
 def pebble_all(r):
