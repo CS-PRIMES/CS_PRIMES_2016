@@ -21,7 +21,7 @@ class PebbleGraph:
     def remove_pebble(self, v):
         if(self.is_pebbled(v) and v is not None):
             print "Pebble removed from node "+str(v)
-        self.pebble_value[v] = None
+            self.pebble_value[v] = None
         # John can you add code that will actually release the stored value of this vertex from memory to free up some space?
 
     def remove_pebbles(self, S):
@@ -36,18 +36,16 @@ class PebbleGraph:
             if (not self.is_pebbled(v)):
                 self.pebble_value[v] = utils.secure_hash(str(v))
                 print "Pebble added to node " + str(v)
-            return
         elif ((self.is_pebbled(self.B[v][0])) and (self.B[v][1] is None)):
             if (not self.is_pebbled(v)):
                 self.pebble_value[v] = utils.secure_hash(str(self.pebble_value[self.B[v][0]]) + str(self.pebble_value[self.B[v][1]]))
                 print "Pebble added to node " + str(v)
-            return
         elif ((self.is_pebbled(self.B[v][0])) and (self.is_pebbled(self.B[v][1]))):
             if (not self.is_pebbled(v)):
                 self.pebble_value[v] = utils.secure_hash(str(self.pebble_value[self.B[v][0]]) + str(self.pebble_value[self.B[v][1]]))
                 print "Pebble added to node " + str(v)
-            return
-        print "Error: attempted to pebble node " + str(v) + " without pebbling both parents"
+        else:
+            print "Error: attempted to pebble node " + str(v) + " without pebbling both parents"
 
     def is_source(self, v):
         return (self.B[v][0] is None and self.B[v][1] is None)
