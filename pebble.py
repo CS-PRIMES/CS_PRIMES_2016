@@ -36,7 +36,7 @@ class PebbleGraph:
             if (not self.is_pebbled(v)):
                 self.pebble_value[v] = utils.secure_hash(str(v))
                 print "Pebble added to node " + str(v)
-))            return
+            return
         elif ((self.is_pebbled(self.B[v][0])) and (self.B[v][1] is None)):
             if (not self.is_pebbled(v)):
                 self.pebble_value[v] = utils.secure_hash(str(self.pebble_value[self.B[v][0]]) + str(self.pebble_value[self.B[v][1]]))
