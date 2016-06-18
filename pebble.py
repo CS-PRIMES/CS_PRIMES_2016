@@ -30,7 +30,7 @@ class PebbleGraph:
             self.remove_pebble(v)
 
     def reset(self):
-        self.pebble = [False]*len(self.B)
+        self.pebble_value = [-1]*len(self.B)
 
     def add_pebble(self, v):
         if (self.is_source(v)):
