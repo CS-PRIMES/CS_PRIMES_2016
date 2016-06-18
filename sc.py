@@ -9,8 +9,8 @@ def butterfly(r, addend):
 
     parents = []
     for i in range (numvertices):
-        parents.append([-1, -1])
-        # -1 signifies the lack of a parent
+        parents.append([None, None])
+        # None signifies the lack of a parent
 
     # First we input the parent directly below the vertice. Note that we do
     # not input anything for the sources because they do not have parents.
