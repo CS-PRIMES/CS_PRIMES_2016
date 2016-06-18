@@ -32,6 +32,8 @@ class PebbleGraph:
         self.pebble_value = [None]*len(self.B)
 
     def add_pebble(self, v):
+        if v is None:
+            return
         if (self.is_source(v)):
             if (not self.is_pebbled(v)):
                 self.pebble_value[v] = utils.secure_hash(str(v))
