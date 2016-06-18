@@ -10,17 +10,16 @@ class PebbleGraph:
 
     def __init__(self, r):
         self.B = ptc.PTC(r,0) # line can be changed
-        for i in range (len(self.B)):
-            self.pebble_value.append(-1)
+        self.pebble_value = [-1]*len(self.B)
 
     def is_pebbled(self, v):
-        if (self.pebble_value[v] == -1):
-            return False
-        else:
+        if (v == -1 or self.pebble_value[v] != -1):
             return True
+        else:
+            return False
 
     def remove_pebble(self, v):
-        if(self.is_pebbled(v)):
+        if(self.is_pebbled(v) and v != -1):
             print "Pebble removed from node "+str(v)
         self.pebble_value[v] = -1
         # John can you add code that will actually release the stored value of this vertex from memory to free up some space?
@@ -38,12 +37,12 @@ class PebbleGraph:
                 self.pebble_value[v] = utils.secure_hash(str(v))
                 print "Pebble added to node " + str(v)
             return
-        if ((self.is_pebbled(self.B[v][0])) and (self.B[v][1] == -1)):
+        elif ((self.is_pebbled(self.B[v][0])) and (self.B[v][1] == -1)):
             if (not self.is_pebbled(v)):
                 self.pebble_value[v] = utils.secure_hash(str(self.pebble_value[self.B[v][0]]) + str(self.pebble_value[self.B[v][1]]))
                 print "Pebble added to node " + str(v)
             return
-        if ((self.is_pebbled(self.B[v][0])) and (self.is_pebbled(self.B[v][1]))):
+        elif ((self.is_pebbled(self.B[v][0])) and (self.is_pebbled(self.B[v][1]))):
             if (not self.is_pebbled(v)):
                 self.pebble_value[v] = utils.secure_hash(str(self.pebble_value[self.B[v][0]]) + str(self.pebble_value[self.B[v][1]]))
                 print "Pebble added to node " + str(v)
