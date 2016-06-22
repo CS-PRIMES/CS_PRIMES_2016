@@ -4,29 +4,37 @@ import datetime
 import sys
 import re
 
-# Make sure there is a folder called test_logs in this directory.  That is where the logs will be saved.
+# HOW TO USE THIS TEST FILE:
+# 1. Make sure there is a folder called test_logs in this directory.  That is where the logs will be saved.
+# 2. In command line or the Python shell (whichever you use), run the start() function
+# 3. Run whichever tests you would like by calling the corresponding functions
+# 4. Run the end() function
+# 5. You will now see a new file in the test_logs folder.  Its name will be the timestamp of when you started the test.
+#    You can rename this file for ease of future access if you wish.
 
-# Feel free to add more test functions
+# TEST FUNCTIONS (Feel free to add more)
 
 def pebble_all(r):
-	print("b")
+	print("Running pebble_all("+str(r)+").")
 	p = pebble.PebbleGraph(r)
-	print("a")
 	for i in range(p.size()):
 		print("Pebbling vertex "+str(i))
 		pebbling_algos.depth_first_pebble(p, i)
+		if(p.is_pebbled(i)):
+			print("Vertex "+str(i)+" successfully pebbled.")
 		p.reset()
+	print("pebble_all("+str(r)+") successfully completed.")
 
-# Just don't touch these functions:
+# START/END FUNCTIONS
 
 def start():
 	filename = re.sub(r':', '.', str(datetime.datetime.now()))
 	sys.stdout = open("./test_logs/"+filename+".txt", 'w')
 	sys.stderr = sys.stdout
-	print("Starting test at "+str(datetime.datetime.now()))
+	print("Starting test at "+str(datetime.datetime.now())+".")
 
 def end():
-	print("Test completed at "+str(datetime.datetime.now()))
+	print("Test completed at "+str(datetime.datetime.now())+".")
 	sys.stdout.close()
 	sys.stdout = sys.__stdout__
 	sys.stderr = sys.__stderr__
