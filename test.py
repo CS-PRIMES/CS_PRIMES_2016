@@ -21,7 +21,7 @@ def pebble_all(r):
 		print("Pebbling vertex "+str(i))
 		pebbling_algos.depth_first_pebble(p, i)
 		if(p.is_pebbled(i)):
-			print("Vertex "+str(i)+" successfully pebbled.")
+			print("Vertex "+str(i)+" successfully pebbled, using "+str(p.max_pebbles)+" pebble(s) in total.")
 		p.reset()
 	print("pebble_all("+str(r)+") successfully completed.")
 
