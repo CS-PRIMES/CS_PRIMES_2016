@@ -14,8 +14,9 @@ import re
 
 # TEST FUNCTIONS (Feel free to add more)
 
-def pebble_all(r):
-	print("Running pebble_all("+str(r)+").")
+def pebble_all_dfp(r):
+	print("***************")
+	print("Running pebble_all_dfp("+str(r)+").")
 	p = pebble.PebbleGraph(r)
 	for i in range(p.size()):
 		print("Pebbling vertex "+str(i))
@@ -24,6 +25,20 @@ def pebble_all(r):
 			print("Vertex "+str(i)+" successfully pebbled, using "+str(p.max_pebbles)+" pebble(s) in total.")
 		p.reset()
 	print("pebble_all("+str(r)+") successfully completed.")
+	print("***************")
+
+def pebble_all_trivial(r):
+	print("***************")
+	print("Running pebble_all_trivial("+str(r)+").")
+	p = pebble.PebbleGraph(r)
+	for i in range(p.size()):
+		print("Pebbling vertex "+str(i))
+		pebbling_algos.trivial_pebble(p, i)
+		if(p.is_pebbled(i)):
+			print("Vertex "+str(i)+" successfully pebbled, using "+str(p.max_pebbles)+" pebble(s) in total.")
+		p.reset()
+	print("pebble_all("+str(r)+") successfully completed.")
+	print("***************")
 
 # START/END FUNCTIONS
 
