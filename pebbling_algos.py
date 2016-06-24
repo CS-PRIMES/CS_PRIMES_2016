@@ -8,9 +8,9 @@ def depth_first_pebble(P, v):
     S = set([v])
     dfp(P, v, S)
 
-def trivial_pebble(graph):
-    for i in range(0, len(graph.B)):
-         graph.add_pebble(i)
+def trivial_pebble(P):
+    for i in range(0, len(P.B)):
+         P.add_pebble(i)
 
 # Depth-first pebble method as described in page 10 of the PTC paper.
 # B: parent adjacency matrix; v: vertex to be pebbled.
@@ -24,4 +24,4 @@ def dfp(P, v, S):
         if(not P.is_pebbled(u)):
             dfp(P, u, S | set(P.get_parents(v)))
     P.add_pebble(v)
-    P.remove_pebbles(S - set(range(P.size())))
+    P.remove_pebbles(set(range(P.size())) - S)
