@@ -53,6 +53,19 @@ def pebble_sinks_dfp(r):
 	print("pebble_sinks_dfp("+str(r)+") successfully completed at "+str(datetime.datetime.now())+".")
 	print("***************")
 
+def pebble_sinks_trivial(r):
+	print("***************")
+	print("Running pebble_sinks_trivial("+str(r)+"), starting at "+str(datetime.datetime.now())+".")
+	p = pebble.PebbleGraph(r)
+	for i in range(p.size()-2**r, p.size()): # just the sinks
+		print("Pebbling vertex "+str(i))
+		pebbling_algos.trivial_pebble(p, i)
+		if(p.is_pebbled(i)):
+			print("Vertex "+str(i)+" successfully pebbled, using "+str(p.max_pebbles)+" pebble(s) in total.")
+		p.reset()
+	print("pebble_sinks_trivial("+str(r)+") successfully completed at "+str(datetime.datetime.now())+".")
+	print("***************")
+
 # START/END FUNCTIONS
 
 def start():
