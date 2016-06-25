@@ -20,11 +20,11 @@ def depth_first_pebble(P, v):
     dfp(P, v, S)
 
 def dfp(P, v, S):
-    if(P.is_source(v)):
+    if P.is_source(v):
         P.add_pebble(v)
         return
     for u in P.get_parents(v):
-        if(not P.is_pebbled(u)):
+        if not P.is_pebbled(u):
             dfp(P, u, S | set(P.get_parents(v)))
     P.add_pebble(v)
     P.remove_pebbles(set(range(P.size())) - S)

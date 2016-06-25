@@ -42,21 +42,24 @@ class PebbleGraph:
     def add_pebble(self, v):
         if v is None:
             return
-        if (not self.is_pebbled(v)):
-            if (self.is_source(v)):
+        if not self.is_pebbled(v):
+            if self.is_source(v):
                 self.pebble_value[v] = utils.secure_hash(str(v))
                 self.num_pebbles += 1
-                if(self.num_pebbles > self.max_pebbles): self.max_pebbles = self.num_pebbles
+                if self.num_pebbles > self.max_pebbles:
+                    self.max_pebbles = self.num_pebbles
                 print "Pebble added to node " + str(v)
-            elif ((self.is_pebbled(self.B[v][0])) and (self.B[v][1] is None)):
+            elif self.is_pebbled(self.B[v][0]) and (self.B[v][1] is None):
                 self.pebble_value[v] = utils.secure_hash(str(self.pebble_value[self.B[v][0]]))
                 self.num_pebbles += 1
-                if(self.num_pebbles > self.max_pebbles): self.max_pebbles = self.num_pebbles
+                if self.num_pebbles > self.max_pebbles:
+                    self.max_pebbles = self.num_pebbles
                 print "Pebble added to node " + str(v)
-            elif ((self.is_pebbled(self.B[v][0])) and (self.is_pebbled(self.B[v][1]))):
+            elif self.is_pebbled(self.B[v][0]) and self.is_pebbled(self.B[v][1]):
                 self.pebble_value[v] = utils.secure_hash(str(self.pebble_value[self.B[v][0]]) + str(self.pebble_value[self.B[v][1]]))
                 self.num_pebbles += 1
-                if(self.num_pebbles > self.max_pebbles): self.max_pebbles = self.num_pebbles
+                if self.num_pebbles > self.max_pebbles:
+                    self.max_pebbles = self.num_pebbles
                 print "Pebble added to node " + str(v)
             else:
                 print "Error: attempted to pebble node " + str(v) + " without pebbling both parents"

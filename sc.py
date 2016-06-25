@@ -7,10 +7,8 @@ def gen(r, addend):
 def butterfly(r, addend):
     numvertices = r * 2 * (2 ** r)
 
-    parents = []
-    for i in range (numvertices):
-        parents.append([None, None])
-        # None signifies the lack of a parent
+    parents = [[None, None]] * numvertices
+    # None signifies the lack of a parent
 
     # First we input the parent directly below the vertice. Note that we do
     # not input anything for the sources because they do not have parents.
