@@ -23,9 +23,12 @@ def pebble_all_dfp(r):
 		pebbling_algos.depth_first_pebble(p, i)
 		if(p.is_pebbled(i)):
 			print("Vertex "+str(i)+" successfully pebbled, using "+str(p.max_pebbles)+" pebble(s) in total.")
+                else:
+                        print "Vertex " + str(i) + "was not successfully pebbled."
 		p.reset()
-	print("pebble_all_dfp("+str(r)+") successfully completed at "+str(datetime.datetime.now())+".")
+	print("pebble_all_dfp("+str(r)+") completed at "+str(datetime.datetime.now())+".")
 	print("***************")
+        p.close_files()
 
 def pebble_all_trivial(r):
 	print("***************")
@@ -36,9 +39,12 @@ def pebble_all_trivial(r):
 		pebbling_algos.trivial_pebble(p, i)
 		if(p.is_pebbled(i)):
 			print("Vertex "+str(i)+" successfully pebbled, using "+str(p.max_pebbles)+" pebble(s) in total.")
+                else:
+                        print "Vertex " + str(i) + " was not successfully pebbled."
 		p.reset()
-	print("pebble_all_trivial("+str(r)+") successfully completed at "+str(datetime.datetime.now())+".")
+	print("pebble_all_trivial("+str(r)+") completed at "+str(datetime.datetime.now())+".")
 	print("***************")
+        p.close_files
 
 def pebble_sinks_dfp(r):
 	print("***************")
@@ -49,9 +55,12 @@ def pebble_sinks_dfp(r):
 		pebbling_algos.depth_first_pebble(p, i)
 		if(p.is_pebbled(i)):
 			print("Vertex "+str(i)+" successfully pebbled, using "+str(p.max_pebbles)+" pebble(s) in total.")
+                else:
+                        print "Vertex " + str(I) + " was not successfully pebbled."
 		p.reset()
-	print("pebble_sinks_dfp("+str(r)+") successfully completed at "+str(datetime.datetime.now())+".")
+	print("pebble_sinks_dfp("+str(r)+") completed at "+str(datetime.datetime.now())+".")
 	print("***************")
+        p.close_files()
 
 def pebble_sinks_trivial(r):
 	print("***************")
@@ -62,9 +71,12 @@ def pebble_sinks_trivial(r):
 		pebbling_algos.trivial_pebble(p, i)
 		if(p.is_pebbled(i)):
 			print("Vertex "+str(i)+" successfully pebbled, using "+str(p.max_pebbles)+" pebble(s) in total.")
+                else:
+                        print "Vertex " + str(i) + " was not successfully pebbled."
 		p.reset()
-	print("pebble_sinks_trivial("+str(r)+") successfully completed at "+str(datetime.datetime.now())+".")
+	print("pebble_sinks_trivial("+str(r)+") completed at "+str(datetime.datetime.now())+".")
 	print("***************")
+        p.close_files
 
 # START/END FUNCTIONS
 
