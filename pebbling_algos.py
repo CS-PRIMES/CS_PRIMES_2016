@@ -5,8 +5,9 @@ import utils
 
 # Trivial pebbling algorithm: literally just pebble everything.  Relies on the property that if i is a parent of j, then i < j.
 
+# Pebbles up to and including vertex i.
 def trivial_pebble(P, i):
-    for i in range(0, i):
+    for i in range(i+1):
          P.add_pebble(i)
 
 # Depth-first pebble method as described in page 10 of the PTC paper.
