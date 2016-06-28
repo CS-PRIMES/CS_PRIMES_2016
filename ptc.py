@@ -6,7 +6,7 @@ def PTC(r, addend):
         return sc.gen(1, addend)
     else:
         all_parents = shelve.open('all_parents.txt')
-        sc_size = 2 * (r-1) * 2**(r-1)
+        sc_size = scsize(r-1)
         ptc_size = ptcsize(r-1)
 
         # Adds Sources
@@ -73,3 +73,6 @@ def ptcsize(r):
         return 4
     else:
         return 2 * (2**r)  + 2 * (2 * (r-1) * 2**(r-1)) + 2 * ptcsize(r-1)
+
+def scsize(r):
+    return 2 * (r) * 2**(r)
