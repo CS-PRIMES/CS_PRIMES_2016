@@ -1,5 +1,3 @@
-#!/usr/bin/python -t
-
 import pebble
 import utils
 import ptc

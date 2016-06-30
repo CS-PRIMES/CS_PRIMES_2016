@@ -17,14 +17,14 @@ import re
 def pebble_all_dfp(r):
     print("***************")
     print("Running pebble_all_dfp("+str(r)+"), starting at "+str(datetime.datetime.now())+".")
-    p = pebble.PebbleGraph(r)
+    p = pebble.PebbleGraph(r, debug=True)
     for i in range(p.size()):
         print("Pebbling vertex "+str(i))
         pebbling_algos.depth_first_pebble(p, i)
         if(p.is_pebbled(i)):
             print("Vertex "+str(i)+" successfully pebbled, using "+str(p.max_pebbles)+" pebble(s) in total.")
         else:
-            print "Vertex " + str(i) + "was not successfully pebbled."
+            print "Vertex " + str(i) + " was not successfully pebbled."
         p.reset()
     print("pebble_all_dfp("+str(r)+") completed at "+str(datetime.datetime.now())+".")
     print("***************")
@@ -33,7 +33,7 @@ def pebble_all_dfp(r):
 def pebble_all_trivial(r):
     print("***************")
     print("Running pebble_all_trivial("+str(r)+").")
-    p = pebble.PebbleGraph(r)
+    p = pebble.PebbleGraph(r, debug=True)
     for i in range(p.size()):
         print("Pebbling vertex "+str(i))
         pebbling_algos.trivial_pebble(p, i)
@@ -44,12 +44,12 @@ def pebble_all_trivial(r):
         p.reset()
     print("pebble_all_trivial("+str(r)+") completed at "+str(datetime.datetime.now())+".")
     print("***************")
-    p.close_files
+    p.close_files()
 
 def pebble_sinks_dfp(r):
     print("***************")
     print("Running pebble_sinks_dfp("+str(r)+"), starting at "+str(datetime.datetime.now())+".")
-    p = pebble.PebbleGraph(r)
+    p = pebble.PebbleGraph(r, debug=True)
     for i in range(p.size()-2**r, p.size()): # just the sinks
         print("Pebbling vertex "+str(i))
         pebbling_algos.depth_first_pebble(p, i)
@@ -65,7 +65,7 @@ def pebble_sinks_dfp(r):
 def pebble_sinks_trivial(r):
     print("***************")
     print("Running pebble_sinks_trivial("+str(r)+"), starting at "+str(datetime.datetime.now())+".")
-    p = pebble.PebbleGraph(r)
+    p = pebble.PebbleGraph(r, debug=True)
     for i in range(p.size()-2**r, p.size()): # just the sinks
         print("Pebbling vertex "+str(i))
         pebbling_algos.trivial_pebble(p, i)
@@ -76,17 +76,17 @@ def pebble_sinks_trivial(r):
         p.reset()
     print("pebble_sinks_trivial("+str(r)+") completed at "+str(datetime.datetime.now())+".")
     print("***************")
-    p.close_files
+    p.close_files()
 
 def pebble_sinks_level(r):
     print("***************")
     print("Running pebble_sinks_level("+str(r)+"), starting at "+str(datetime.datetime.now())+".")
-    p = pebble.PebbleGraph(r)
+    p = pebble.PebbleGraph(r, debug=True)
     pebbling_algos.level_pebble(p, 0)
     print("pebble_sinks_level("+str(r)+") completed at "+str(datetime.datetime.now())+".")
     print("The max amount of pebbles used was: " + str(p.max_pebbles) + ".")
     print("***************")
-    p.close_files
+    p.close_files()
 
 # START/END FUNCTIONS
 

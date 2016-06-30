@@ -10,14 +10,16 @@ class PebbleGraph:
     num_pebbles = 0                                           # num_pebbles is the number of pebbles currently on the graph.
     max_pebbles = 0                                           # max_pebbles it the maximum number of pebbles that have been on the graph since the last reset.
     graph_num = 1
-    
-    def __init__(self, r):
+    debug = False
+
+    def __init__(self, r, debug=False):
         self.graph_num = r
         self.B = ptc.PTC(r,0) # line can be changed
         for i in range(self.size()):
             self.pebble_value[str(i)] = None
         self.num_pebbles = 0
         self.max_pebbles = 0
+        self.debug = debug
 
     def close_files(self):
         self.pebble_value.close()
@@ -33,7 +35,8 @@ class PebbleGraph:
         if(self.is_pebbled(v) and v is not None):
             self.pebble_value[str(v)] = None
             self.num_pebbles -= 1
-            print "Pebble removed from node "+str(v)
+            if(debug):
+                print "Pebble removed from node "+str(v)
         # John can you add code that will actually release the stored value of this vertex from memory to free up some space?
 
     def remove_pebbles(self, S):
@@ -45,7 +48,8 @@ class PebbleGraph:
             self.pebble_value[str(i)] = None
         self.num_pebbles = 0
         self.max_pebbles = 0
-        print "All pebbles have been removed from the graph"
+        if(debug):
+            print "All pebbles have been removed from the graph"
 
     def add_pebble(self, v):
         if v is None:
@@ -56,19 +60,22 @@ class PebbleGraph:
                 self.num_pebbles += 1
                 if self.num_pebbles > self.max_pebbles:
                     self.max_pebbles = self.num_pebbles
-                print "Pebble added to node " + str(v)
+                if(debug):
+                    print "Pebble added to node " + str(v)
             elif self.is_pebbled(self.B[str(v)][0]) and (self.B[str(v)][1] is None):
                 self.pebble_value[str(v)] = utils.secure_hash(str(self.pebble_value[str(self.B[str(v)][0])]))
                 self.num_pebbles += 1
                 if self.num_pebbles > self.max_pebbles:
                     self.max_pebbles = self.num_pebbles
-                print "Pebble added to node " + str(v)
+                if(debug):
+                    print "Pebble added to node " + str(v)
             elif self.is_pebbled(self.B[str(v)][0]) and self.is_pebbled(self.B[str(v)][1]):
                 self.pebble_value[str(v)] = utils.secure_hash(str(self.pebble_value[str(self.B[str(v)][0])]) + str(self.pebble_value[str(self.B[str(v)][1])]))
                 self.num_pebbles += 1
                 if self.num_pebbles > self.max_pebbles:
                     self.max_pebbles = self.num_pebbles
-                print "Pebble added to node " + str(v)
+                if(debug):
+                    print "Pebble added to node " + str(v)
             else:
                 print "Error: attempted to pebble node " + str(v) + " without pebbling both parents"
         else:
@@ -88,3 +95,9 @@ class PebbleGraph:
         for i in range(self.size()):
             print "[" + str(self.B[str(i)][0]) + ", " + str(self.B[str(i)][1]) + "]",
         print "]"
+
+    def start_debug(self):
+        debug = True
+
+    def stop_debug(self):
+        debug = False
