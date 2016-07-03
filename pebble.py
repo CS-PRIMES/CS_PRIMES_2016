@@ -5,25 +5,24 @@ import utils
 import ptc
 
 class PebbleGraph:
-    B = shelve.open('B.txt')                                  # B contains the parents of the pebble.
-    pebble_value = shelve.open('pebble_value.txt')            # pebble_value stores the value of the hash associated with the pebble.
-    num_pebbles = 0                                           # num_pebbles is the number of pebbles currently on the graph.
-    max_pebbles = 0                                           # max_pebbles it the maximum number of pebbles that have been on the graph since the last reset.
-    graph_num = 1
-    debug = False
-
     def __init__(self, r, debug=False):
+        self.B = shelve.open('B.txt')                                  # B contains the parents of the pebble.
+        self.all_graphs = shelve.open('all_graphs.txt', writeback=True)                # all_graphs contains the parents of every single ptc graph up to size r.
+        self.pebble_value = shelve.open('pebble_value.txt')            # pebble_value stores the value of the hash associated with the pebble.
+        self.num_pebbles = 0                                           # num_pebbles is the number of pebbles currently on the graph.
+        self.max_pebbles = 0                                           # max_pebbles it the maximum number of pebbles that have been on the graph since the last reset.
         self.graph_num = r
-        self.B = ptc.PTC(r,0) # line can be changed
+        ptc.PTC(r, self.all_graphs) # line can be changed
+        for i in range(self.size()):
+            self.B[str(i)] = self.all_graphs[str(self.graph_num)][i]
         for i in range(self.size()):
             self.pebble_value[str(i)] = None
-        self.num_pebbles = 0
-        self.max_pebbles = 0
         self.debug = debug
 
     def close_files(self):
         self.pebble_value.close()
         self.B.close()
+        self.all_graphs.close()
 
     def is_pebbled(self, v):
         if (v is None or self.pebble_value[str(v)] is not None):
