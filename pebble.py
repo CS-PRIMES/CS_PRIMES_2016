@@ -5,23 +5,24 @@ import utils
 import ptc
 
 class PebbleGraph:
-    B = shelve.open('B.txt')                                  # B contains the parents of the pebble.
-    pebble_value = shelve.open('pebble_value.txt')            # pebble_value stores the value of the hash associated with the pebble.
-    num_pebbles = 0                                           # num_pebbles is the number of pebbles currently on the graph.
-    max_pebbles = 0                                           # max_pebbles it the maximum number of pebbles that have been on the graph since the last reset.
-    graph_num = 1
-    
     def __init__(self, r):
+        self.B = shelve.open('B.txt')                                  # B contains the parents of the pebble.
+        self.all_graphs = shelve.open('all_graphs.txt', writeback=True)                # all_graphs contains the parents of every single ptc graph up to size r.
+        self.pebble_value = shelve.open('pebble_value.txt')            # pebble_value stores the value of the hash associated with the pebble.
+        self.num_pebbles = 0                                           # num_pebbles is the number of pebbles currently on the graph.
+        self.max_pebbles = 0                                           # max_pebbles it the maximum number of pebbles that have been on the graph since the last reset.
+        self.graph_num = 1
         self.graph_num = r
-        self.B = ptc.PTC(r,0) # line can be changed
+        ptc.PTC(r, self.all_graphs) # line can be changed
+        for i in range(self.size()):
+            self.B[str(i)] = self.all_graphs[str(self.graph_num)][i]
         for i in range(self.size()):
             self.pebble_value[str(i)] = None
-        self.num_pebbles = 0
-        self.max_pebbles = 0
 
     def close_files(self):
         self.pebble_value.close()
         self.B.close()
+        self.all_graphs.close()
 
     def is_pebbled(self, v):
         if (v is None or self.pebble_value[str(v)] is not None):
@@ -56,23 +57,16 @@ class PebbleGraph:
                 self.num_pebbles += 1
                 if self.num_pebbles > self.max_pebbles:
                     self.max_pebbles = self.num_pebbles
-                print "Pebble added to node " + str(v)
             elif self.is_pebbled(self.B[str(v)][0]) and (self.B[str(v)][1] is None):
                 self.pebble_value[str(v)] = utils.secure_hash(str(self.pebble_value[str(self.B[str(v)][0])]))
                 self.num_pebbles += 1
                 if self.num_pebbles > self.max_pebbles:
                     self.max_pebbles = self.num_pebbles
-                print "Pebble added to node " + str(v)
             elif self.is_pebbled(self.B[str(v)][0]) and self.is_pebbled(self.B[str(v)][1]):
                 self.pebble_value[str(v)] = utils.secure_hash(str(self.pebble_value[str(self.B[str(v)][0])]) + str(self.pebble_value[str(self.B[str(v)][1])]))
                 self.num_pebbles += 1
                 if self.num_pebbles > self.max_pebbles:
                     self.max_pebbles = self.num_pebbles
-                print "Pebble added to node " + str(v)
-            else:
-                print "Error: attempted to pebble node " + str(v) + " without pebbling both parents"
-        else:
-            print "Attempted to pebble node " + str(v) + " but it has already been pebbled"
 
     def is_source(self, v):
         return (self.B[str(v)][0] is None and self.B[str(v)][1] is None)
