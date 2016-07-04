@@ -79,15 +79,30 @@ def pebble_sinks_trivial(r):
     p.close_files()
 
 def pebble_sinks_level(r):
-    print("***************")
-    print("Running pebble_sinks_level("+str(r)+"), starting at "+str(datetime.datetime.now())+".")
+    print ("***************")
+    print ("Running pebble_sinks_level("+str(r)+"), starting at "+str(datetime.datetime.now())+".")
     p = pebble.PebbleGraph(r, debug=True)
     pebbling_algos.level_pebble(p, 0)
-    print("pebble_sinks_level("+str(r)+") completed at "+str(datetime.datetime.now())+".")
-    print("The max amount of pebbles used was: " + str(p.max_pebbles) + ".")
-    print("***************")
+    print ("pebble_sinks_level("+str(r)+") completed at "+str(datetime.datetime.now())+".")
+    print ("The max amount of pebbles used was: " + str(p.max_pebbles) + ".")
+    print ("***************")
     p.close_files()
 
+# This function uses trivial_pebble to pebble the entire graph and all of its vertices.
+def pebble_graph_trivial(r):
+    print "***************"
+    print "Running pebble_graph_trivial(" + str(r) + "), starting at " + str(datetime.datetime.now()) + "."
+    p = pebble.PebbleGraph(r)                                          # debug is automatically set to false
+    pebbling_algos.trivial_pebble(p, p.size() - 1)
+    if p.is_pebbled(p.size() - 1):
+        print "The final vertex in PTC(" + str(r) + ") was successfully pebbled."
+    else:
+        print "ERROR: The final vertex in PTC(" + str(r) + ") was not successfully pebbled."
+    print "The number of pebbles used was: " + str(p.max_pebbles) + "."
+    print "pebble_graph_trivial(" + str(r) + ") completed at " + str(datetime.datetime.now()) + "."
+    print "***************"
+    p.close_files()
+    
 # START/END FUNCTIONS
 
 def start():
