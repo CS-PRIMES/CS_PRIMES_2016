@@ -13,11 +13,8 @@ def butterfly(r, addend, parents):
         parents[str(i)] = [None, None]
     # None signifies the lack of a parent
 
-    # First we input the parent directly below the vertice. Note that we do
-    # not input anything for the sources because they do not have parents.
 
-
-    # Now we input the parent below and to the side of the vertice.
+    # We store the parents as: [Parent directly below vertex, parent below and to the side of vertex.]
     for vertex in range (2**r, numvertices):
         column = vertex % (2**r) + 1
         row = vertex / (2**r) + 1
