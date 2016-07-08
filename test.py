@@ -1,5 +1,4 @@
-import pebble
-import pebbling_algos
+import pebble, pebbling_algos, trees
 import datetime
 import sys
 import re
@@ -13,6 +12,18 @@ import re
 #    You can rename this file for ease of future access if you wish.
 
 # TEST FUNCTIONS (Feel free to add more)
+
+def merkle_test(r):
+    print "***************"
+    print "Running merkle_test("+str(r)+"), starting at "+str(datetime.datetime.now())+"."
+    p = pebble.PebbleGraph(r, debug=True)
+    pebbling_algos.trivial_pebble(p, p.size()-1)
+    print "Building Merkle tree..."
+    mt = trees.MerkleNode(p.list_values())
+    print "Merkle tree setup complete.  Root: "+mt.root()
+    print "merkle_test("+str(r)+") completed at "+str(datetime.datetime.now())+"."
+    print "***************"
+    p.close_files()
 
 def pebble_all_dfp(r):
     print("***************")

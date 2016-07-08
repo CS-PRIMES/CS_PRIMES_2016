@@ -96,7 +96,13 @@ class PebbleGraph:
         print "]"
 
     def start_debug(self):
-        debug = True
+        self.debug = True
 
     def stop_debug(self):
-        debug = False
+        self.debug = False
+
+    def list_values(self):
+        values = []
+        for i in range(self.size()):
+            values.append(self.pebble_value[str(i)])
+        return values

@@ -1,10 +1,14 @@
 import utils
 
 class MerkleNode(object):
-	def __init__(self, leaf_values, parent=None, sibling=None, prehashed=False):
+
+	# Constructor for MerkleNode object.
+	# leaf_values: an array containing the values of the leaves of the tree
+	# parent: self-explanatory
+	# prehashed: whether the leaf values are hashed already or not
+	def __init__(self, leaf_values, parent=None, prehashed=False):
 		self.size = len(leaf_values)
 		self.parent = parent
-		self.sibling = sibling
 		self.leaf_values = leaf_values
 		self.leaves = None
 		if self.size == 1:
