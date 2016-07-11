@@ -1,4 +1,4 @@
-import pebble, pebbling_algos, trees
+import pebble, pebbling_algos, trees, primitive_pv
 import datetime
 import sys
 import re
@@ -13,14 +13,38 @@ import re
 
 # TEST FUNCTIONS (Feel free to add more)
 
+def primitive_pv_test(r):
+    print "***************"
+    print "Running pv_test("+str(r)+"), starting at "+str(datetime.datetime.now())+"."
+    
+    print "Initializing prover..."
+    P = primitive_pv.Prover(r, debug=True)
+    print "Prover initialization complete."
+    print "Initializing verifier..."
+    V = primitive_pv.Verifier(r, debug=True)
+    V.set_prover(P)
+    print "Verifier initialization complete."
+    print "Commencing verification protocol."
+    result = V.verify()
+    if result:
+        print "Honest prover verified successfully."
+    else:
+        print "Verification failed; prover will be denied."
+
+    print "pv_test("+str(r)+") completed at "+str(datetime.datetime.now())+"."
+    print "***************"
+    P.close_files()
+
 def merkle_test(r):
     print "***************"
     print "Running merkle_test("+str(r)+"), starting at "+str(datetime.datetime.now())+"."
+
     p = pebble.PebbleGraph(r, debug=True)
     pebbling_algos.trivial_pebble(p, p.size()-1)
     print "Building Merkle tree..."
     mt = trees.MerkleNode(p.list_values())
     print "Merkle tree setup complete.  Root: "+mt.root()
+
     print "merkle_test("+str(r)+") completed at "+str(datetime.datetime.now())+"."
     print "***************"
     p.close_files()
@@ -28,6 +52,7 @@ def merkle_test(r):
 def pebble_all_dfp(r):
     print("***************")
     print("Running pebble_all_dfp("+str(r)+"), starting at "+str(datetime.datetime.now())+".")
+
     p = pebble.PebbleGraph(r, debug=True)
     for i in range(p.size()):
         print("Pebbling vertex "+str(i))
@@ -37,6 +62,7 @@ def pebble_all_dfp(r):
         else:
             print "Vertex " + str(i) + " was not successfully pebbled."
         p.reset()
+
     print("pebble_all_dfp("+str(r)+") completed at "+str(datetime.datetime.now())+".")
     print("***************")
     p.close_files()
@@ -44,6 +70,7 @@ def pebble_all_dfp(r):
 def pebble_all_trivial(r):
     print("***************")
     print("Running pebble_all_trivial("+str(r)+").")
+
     p = pebble.PebbleGraph(r, debug=True)
     for i in range(p.size()):
         print("Pebbling vertex "+str(i))
@@ -53,6 +80,7 @@ def pebble_all_trivial(r):
         else:
             print "Vertex " + str(i) + " was not successfully pebbled."
         p.reset()
+
     print("pebble_all_trivial("+str(r)+") completed at "+str(datetime.datetime.now())+".")
     print("***************")
     p.close_files()
@@ -60,6 +88,7 @@ def pebble_all_trivial(r):
 def pebble_sinks_dfp(r):
     print("***************")
     print("Running pebble_sinks_dfp("+str(r)+"), starting at "+str(datetime.datetime.now())+".")
+
     p = pebble.PebbleGraph(r, debug=True)
     for i in range(p.size()-2**r, p.size()): # just the sinks
         print("Pebbling vertex "+str(i))
@@ -69,6 +98,7 @@ def pebble_sinks_dfp(r):
         else:
             print "Vertex " + str(i) + " was not successfully pebbled."
         p.reset()
+
     print("pebble_sinks_dfp("+str(r)+") completed at "+str(datetime.datetime.now())+".")
     print("***************")
     p.close_files()
@@ -76,6 +106,7 @@ def pebble_sinks_dfp(r):
 def pebble_sinks_trivial(r):
     print("***************")
     print("Running pebble_sinks_trivial("+str(r)+"), starting at "+str(datetime.datetime.now())+".")
+
     p = pebble.PebbleGraph(r, debug=True)
     for i in range(p.size()-2**r, p.size()): # just the sinks
         print("Pebbling vertex "+str(i))
@@ -85,6 +116,7 @@ def pebble_sinks_trivial(r):
         else:
             print "Vertex " + str(i) + " was not successfully pebbled."
         p.reset()
+
     print("pebble_sinks_trivial("+str(r)+") completed at "+str(datetime.datetime.now())+".")
     print("***************")
     p.close_files()
@@ -92,10 +124,12 @@ def pebble_sinks_trivial(r):
 def pebble_sinks_level(r):
     print ("***************")
     print ("Running pebble_sinks_level("+str(r)+"), starting at "+str(datetime.datetime.now())+".")
+
     p = pebble.PebbleGraph(r, debug=True)
     pebbling_algos.level_pebble(p, 0)
-    print ("pebble_sinks_level("+str(r)+") completed at "+str(datetime.datetime.now())+".")
     print ("The max amount of pebbles used was: " + str(p.max_pebbles) + ".")
+
+    print ("pebble_sinks_level("+str(r)+") completed at "+str(datetime.datetime.now())+".")
     print ("***************")
     p.close_files()
 
@@ -103,6 +137,7 @@ def pebble_sinks_level(r):
 def pebble_graph_trivial(r):
     print "***************"
     print "Running pebble_graph_trivial(" + str(r) + "), starting at " + str(datetime.datetime.now()) + "."
+
     p = pebble.PebbleGraph(r)                                          # debug is automatically set to false
     pebbling_algos.trivial_pebble(p, p.size() - 1)
     if p.is_pebbled(p.size() - 1):
@@ -110,6 +145,7 @@ def pebble_graph_trivial(r):
     else:
         print "ERROR: The final vertex in PTC(" + str(r) + ") was not successfully pebbled."
     print "The number of pebbles used was: " + str(p.max_pebbles) + "."
+
     print "pebble_graph_trivial(" + str(r) + ") completed at " + str(datetime.datetime.now()) + "."
     print "***************"
     p.close_files()
