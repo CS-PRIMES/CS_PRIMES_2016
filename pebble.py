@@ -5,6 +5,7 @@ import utils
 import ptc
 
 class PebbleGraph:
+    
     def __init__(self, r, debug=False):
         self.B = shelve.open('B.txt')                                  # B contains the parents of the pebble.
         self.all_graphs = shelve.open('all_graphs.txt', writeback=True)                # all_graphs contains the parents of every single ptc graph up to size r.
@@ -96,7 +97,7 @@ class PebbleGraph:
         print "]"
 
     def start_debug(self):
-        debug = True
+        self.debug = True
 
     def stop_debug(self):
-        debug = False
+        self.debug = False
