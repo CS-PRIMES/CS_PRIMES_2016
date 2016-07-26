@@ -2,6 +2,7 @@ import pebble, pebbling_algos, trees, primitive_pv
 import datetime
 import sys
 import re
+import time
 
 # HOW TO USE THIS TEST FILE:
 # 1. Make sure there is a folder called test_logs in this directory.  That is where the logs will be saved.
@@ -137,15 +138,22 @@ def pebble_sinks_level(r):
 def pebble_graph_trivial(r):
     print "***************"
     print "Running pebble_graph_trivial(" + str(r) + "), starting at " + str(datetime.datetime.now()) + "."
-
-    p = pebble.PebbleGraph(r)                                          # debug is automatically set to false
+    start_generate = time.time()
+    p = pebble.PebbleGraph(r)           # debug is automatically set to false
+    end_generate = time.time()
+    start_pebble = time.time()
     pebbling_algos.trivial_pebble(p, p.size() - 1)
     if p.is_pebbled(p.size() - 1):
         print "The final vertex in PTC(" + str(r) + ") was successfully pebbled."
     else:
         print "ERROR: The final vertex in PTC(" + str(r) + ") was not successfully pebbled."
-    print "The number of pebbles used was: " + str(p.max_pebbles) + "."
-
+    print "Vertices in graph: " + str(p.max_pebbles)
+    print "Seconds elapsed to generate graph: " + str(end_generate - start_generate)
+    print "Vertices generated per second: " + str(p.max_pebbles / (end_generate - start_generate))
+    print "Seconds elapsed to pebble graph: " + str(time.time() - start_pebble)
+    print "Vertices pebbled per second: " + str(p.max_pebbles / (time.time() - start_pebble))
+    print "Total seconds elapsed: " + str(time.time() - start_generate)
+    print "Vertices generated and pebbled per second: " + str(p.max_pebbles / (time.time() - start_generate))
     print "pebble_graph_trivial(" + str(r) + ") completed at " + str(datetime.datetime.now()) + "."
     print "***************"
     p.close_files()
