@@ -1,4 +1,5 @@
-(# CS_PRIMES_2016
+# CS_PRIMES_2016
+
 PRIMES Project for 2016-17, involving implementation of Proof of Space
 
 This project is implemented in Python 2.7.11.

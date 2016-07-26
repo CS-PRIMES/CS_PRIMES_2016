@@ -101,3 +101,10 @@ class PebbleGraph:
 
     def stop_debug(self):
         self.debug = False
+
+    def list_values(self):
+        values = []
+        for i in range(self.size()):
+            values.append(self.pebble_value[str(i)])
+        return values
+
