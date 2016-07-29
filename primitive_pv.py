@@ -1,4 +1,5 @@
 import pebble, trees, pebbling_algos, utils
+import shelve
 import random # is this the right random number generator to use?
 
 ##### PRIMITIVE PROVER/VERIFIER SETUP #####
@@ -16,6 +17,8 @@ import random # is this the right random number generator to use?
 # 	actually send over the sources, nor does he specifically check for the vali-
 #	dity of some fixed number of sources.
 
+filename = "merkle_tree.txt" # filename of the shelve storage file for Prover's MT
+
 class Prover:
 	def __init__(self, r, debug=False):
 		self.debug = debug
@@ -24,34 +27,36 @@ class Prover:
 		self.r = r
 		self.p = pebble.PebbleGraph(r)
 		pebbling_algos.trivial_pebble(self.p, self.p.size()-1)
-		self.mt = trees.MerkleNode(self.p.list_values())
+
+		# code to build MT
+		#self.mt = trees.MerkleNode(self.p.list_values())
+		self.mt = shelve.open(filename)
+		self.mt["leaf_values"] = self.p.list_values()
+		self.mt["leaf_keys"] = trees.MT([0, self.p.size()], self.mt, "")
+
 		if self.debug:
 			print "P: Good to go, __init__ completed."
 
 	def send_root(self):
 		if self.debug:
-			print "P: Sending over my Merkle root: "+self.mt.root()
-		return self.mt.root()
+			print "P: Sending over my Merkle root: "+self.mt[""][0] # "" is the key of the root, and [0] returns its value
+		return self.mt[""][0]
 
 	def open(self, i):
+		leaf_value = utils.secure_hash(self.mt["leaf_values"][i])
 		if self.debug:
-			print "P: Opening that vertex, which has value "+self.mt.leaves[i].value
-		path = self.mt.open(i)
-		if self.debug:
-			print "P: Here is my path to the Merkle root: "
-			print path
-		sibling_path = []
-		for v in path:
-			sibling_path.append(v.sibling)
+			print "P: Opening that vertex, which has value "+leaf_value
+		sibling_path = trees.mtopen(i, self.mt)
 		if self.debug:
 			print "P: The sibling path is: "
 			print sibling_path
-		return Opening(self.mt.leaves[i].value, sibling_path)
+		return Opening(leaf_value, sibling_path)
 
 	def close_files(self):
 		if self.debug:
 			print "P: Closing all my files.  Good night."
 		self.p.close_files()
+		self.mt.close()
 
 class Verifier:
 	# rroot is the received root from the prover -- verifier doesn't know for sure if the root is legitimate
@@ -100,11 +105,13 @@ class Verifier:
 		cur = opening.leaf_value
 		if self.debug:
 			print "V: Working my way up the Merkle tree..."
-		for v in opening.sibling_path:
-			if v.on_right:
-				cur = utils.secure_hash(cur+v.value)
+		for x in opening.sibling_path: # recall that x is a two-element array of the form [sibling_value, sibling_path]
+			value = x[0]
+			key = x[1]
+			if key[-1] == 'R':
+				cur = utils.secure_hash(cur+value)
 			else:
-				cur = utils.secure_hash(v.value+cur)
+				cur = utils.secure_hash(value+cur)
 		if self.debug:
 			print "V: Calculated root value is "+cur
 		return cur == self.rroot
