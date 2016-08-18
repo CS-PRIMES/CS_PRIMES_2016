@@ -2,7 +2,7 @@
 
 import shelve
 import utils
-import ptc
+import linear_ptc
 
 class PebbleGraph:
     
@@ -13,17 +13,18 @@ class PebbleGraph:
         self.num_pebbles = 0                                           # num_pebbles is the number of pebbles currently on the graph.
         self.max_pebbles = 0                                           # max_pebbles it the maximum number of pebbles that have been on the graph since the last reset.
         self.graph_num = r
-        ptc.PTC(r, self.all_graphs) 
-        for i in range(self.size()):
+        self.size = linear_ptc.linear_ptcsize(self.graph_num)
+        linear_ptc.linear_PTC(r, self.all_graphs)
+        for i in range(self.size):
             self.B[str(i)] = self.all_graphs[str(self.graph_num)][i]
-        for i in range(self.size()):
+        for i in range(self.size):
             self.pebble_value[str(i)] = None
         self.debug = debug
-
+        self.all_graphs.close()
+        
     def close_files(self):
         self.pebble_value.close()
         self.B.close()
-        self.all_graphs.close()
 
     def is_pebbled(self, v):
         if (v is None or self.pebble_value[str(v)] is not None):
@@ -43,7 +44,7 @@ class PebbleGraph:
             self.remove_pebble(v)
 
     def reset(self):
-        for i in range(self.size()):
+        for i in range(self.size):
             self.pebble_value[str(i)] = None
         self.num_pebbles = 0
         self.max_pebbles = 0
@@ -61,38 +62,38 @@ class PebbleGraph:
                     self.max_pebbles = self.num_pebbles
                 if (self.debug):
                     print "Pebble added to node " + str(v)
-            elif self.is_pebbled(self.B[str(v)][0]) and (self.B[str(v)][1] is None):
-                self.pebble_value[str(v)] = utils.secure_hash(str(self.pebble_value[str(self.B[str(v)][0])]))
-                self.num_pebbles += 1
-                if self.num_pebbles > self.max_pebbles:
-                    self.max_pebbles = self.num_pebbles
-                if (self.debug):
-                    print "Pebble added to node " + str(v)
-            elif self.is_pebbled(self.B[str(v)][0]) and self.is_pebbled(self.B[str(v)][1]):
-                self.pebble_value[str(v)] = utils.secure_hash(str(self.pebble_value[str(self.B[str(v)][0])]) + str(self.pebble_value[str(self.B[str(v)][1])]))
-                self.num_pebbles += 1
-                if self.num_pebbles > self.max_pebbles:
-                    self.max_pebbles = self.num_pebbles
-                if (self.debug):
-                    print "Pebble added to node " + str(v)
             else:
-                print "Error: attempted to pebble node " + str(v) + " without pebbling both parents"
+                prehash = ""
+                error = 0
+                for i in range(7):
+                    if self.B[str(v)][i] != None:
+                        if self.pebble_value[str(self.B[str(v)][i])] == None:
+                            print "Error: Attempted to pebble node " + str(v) + "without pebbling parent " + str(i) + "."
+                            error = 1
+                        else:
+                            prehash = prehash + str(self.pebble_value[str(self.B[str(v)][i])])
+                if error == 0:
+                    self.pebble_value[str(v)] = utils.secure_hash(str(v))
+                    self.num_pebbles += 1
+                    if self.num_pebbles > self.max_pebbles:
+                        self.max_pebbles = self.num_pebbles
+                    if (self.debug):
+                        print "Pebble added to node " + str(v)
         else:
-            print "Attempted to pebble node " + str(v) + " but it has already been pebbled"
+            print "Error: Attempted to pebble node " + str(v) + " but it has already been pebbled"
 
     def is_source(self, v):
-        return (self.B[str(v)][0] is None and self.B[str(v)][1] is None)
+        return (self.B[str(v)][0] is None and self.B[str(v)][1] is None and self.B[str(v)][2] and self.B[str(v)][3] is None and
+                self.B[str(v)][4] is None and self.B[str(V)][5] is None and self.B[str(v)][6] is None)
 
     def get_parents(self, v):
         return self.B[str(v)]
 
-    def size(self):
-        return ptc.ptcsize(self.graph_num)
-
     def print_graph(self):
         print "[",
-        for i in range(self.size()):
-            print "[" + str(self.B[str(i)][0]) + ", " + str(self.B[str(i)][1]) + "]",
+        for i in range(self.size):
+            print ("[" + str(self.B[str(i)][0]) + ", " + str(self.B[str(i)][1]) + "," + str(self.B[str(i)][2]) + "," + str(self.B[str(i)][3]) +
+                   "," + str(self.B[str(i)][4]) + "," + str(self.B[str(i)][5]) + "," + str(self.B[str(i)][6]) + "]",)
         print "]"
 
     def start_debug(self):
@@ -103,7 +104,7 @@ class PebbleGraph:
 
     def list_values(self):
         values = []
-        for i in range(self.size()):
+        for i in range(self.size):
             values.append(self.pebble_value[str(i)])
         return values
 
