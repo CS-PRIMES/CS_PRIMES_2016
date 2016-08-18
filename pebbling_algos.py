@@ -10,6 +10,23 @@ def trivial_pebble(P, i):
     for i in range(i+1):
          P.add_pebble(i)
 
+# Pebbles an entire linear ptc graph from sources to sinks. Never removes pebbles.
+def linear_trivial_pebble(graph):
+    position = 0
+    while (position < graph.size):
+        if graph.B[str(position)][6] == None:
+            for i in range(position, position + 128):
+                graph.add_pebble(i)
+            position += 128
+        # Only occurs if we are in the right vertices of an expander graph.
+        else:
+            i = position + 2 * (graph.B[str(position)][6] - position) - 1
+            while (i >= position):
+                graph.add_pebble(i)
+                i = i - 1
+            position += 2 * (graph.B[str(position)][6] - position)
+
+    
 # DEPTH-FIRST PEBBLE METHOD, as described in page 10 of the PTC paper.
 # B: parent adjacency matrix; v: vertex to be pebbled.
 # I'm not 100% sure what S is but it seems to be a set of all the vertices that call on v to be pebbled...
