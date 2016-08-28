@@ -1,4 +1,4 @@
-import pebble, pebbling_algos, trees, primitive_pv, linear_pebble
+import pebble, pebbling_algos, trees, primitive_pv, linear_pebble, ptc, shelve, linear_ptc
 import datetime
 import sys
 import re
@@ -13,6 +13,24 @@ import time
 #    You can rename this file for ease of future access if you wish.
 
 # TEST FUNCTIONS (Feel free to add more)
+
+def create_linear_graphs(n): # creates all linear PTC graphs up to n.
+    print "***************"
+    print "Running create_linear_graphs(" + str(n) + ", starting at " + str(datetime.datetime.now()) + "."
+    all_linear_graphs = shelve.open('all_linear_graphs.txt', writeback=True)
+    linear_ptc.linear_PTC(n, all_linear_graphs)
+    print "create_linear_graphs(" + str(n) + "), completed at " + str(datetime.datetime.now()) + "."
+    print "***************"
+    all_linear_graphs.close()
+        
+def create_butterfly_graphs(n): # creates all butterfly PTC graphs up to n.
+    print "***************"
+    print "Running create_butterfly_graphs(" + str(n) + "), starting at " + str(datetime.datetime.now()) + "."
+    all_graphs = shelve.open('all_graphs.txt', writeback=True)
+    ptc.PTC(n, all_graphs)
+    print "create_butterfly_graphs(" + str(n) + ") completed at " + str(datetime.datetime.now()) + "."
+    print "***************"
+    all_graphs.close()
 
 def primitive_pv_test(r):
     print "***************"
@@ -135,11 +153,11 @@ def pebble_sinks_level(r):
     p.close_files()
 
 # This function uses trivial_pebble to pebble the entire graph and all of its vertices.
-def pebble_graph_trivial(r):
+def pebble_graph_trivial(r, pre_gen_graph=False, debug_flag=False):
     print "***************"
-    print "Running pebble_graph_trivial(" + str(r) + "), starting at " + str(datetime.datetime.now()) + "."
+    print "Running pebble_graph_trivial(" + str(r) + ", pre_gen_graph=" + str(pre_gen_graph) + "), starting at " + str(datetime.datetime.now()) + "."
     start_generate = time.time()
-    p = pebble.PebbleGraph(r)           # debug is automatically set to false
+    p = pebble.PebbleGraph(r, pre_generated_graph=pre_gen_graph, debug=debug_flag)
     end_generate = time.time()
     start_pebble = time.time()
     pebbling_algos.trivial_pebble(p, p.size() - 1)
@@ -154,16 +172,16 @@ def pebble_graph_trivial(r):
     print "Vertices pebbled per second: " + str(p.size() / (time.time() - start_pebble))
     print "Total seconds elapsed: " + str(time.time() - start_generate)
     print "Vertices generated and pebbled per second: " + str(p.size() / (time.time() - start_generate))
-    print "pebble_graph_trivial(" + str(r) + ") completed at " + str(datetime.datetime.now()) + "."
+    print "pebble_graph_trivial(" + str(r) + ", pre_gen_graph=" + str(pre_gen_graph) + ") completed at " + str(datetime.datetime.now()) + "."
     print "***************"
     p.close_files()
 
 # This function uses linear_trivial_pebble to pebble an entire linear ptc graph and all of its vertices.
-def linear_pebble_graph_trivial(r):
+def linear_pebble_graph_trivial(r, pre_gen_graph=False, debug_flag=False):
     print "***************"
     print "Running linear_pebble_graph_trivial(" + str(r) + "), starting at " + str(datetime.datetime.now()) + "."
     start_generate = time.time()
-    p = linear_pebble.PebbleGraph(r)     # debug is automatically set to false
+    p = linear_pebble.PebbleGraph(r, pre_generated_graph=pre_gen_graph, debug=debug_flag)
     end_generate = time.time()
     start_pebble = time.time()
     pebbling_algos.linear_trivial_pebble(p)

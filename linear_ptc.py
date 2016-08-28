@@ -17,7 +17,7 @@ import linear_superconcentrator # file for superconcentrators
 
 def linear_PTC(r, all_parents):
     all_parents[str(1)] = []
-    for i in range(256): # This size is 256.
+    for i in range(256):
         all_parents[str(1)].append([None, None, None, None, None, None, None])
 
     sc1 = shelve.open('sc1.txt')
