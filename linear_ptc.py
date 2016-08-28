@@ -1,9 +1,3 @@
-# Remember to change the base case to 128.
-# Work on the outline.
-# Read up on remote procedure calls. (xml rpc)
-# Runing experiment with pebbling ptc graphs without shelve. (4 data points.) with and without shelve for both linear_ptc.py and ptc.py
-
-
 # This program creates a ptc graph using linear superconcentrators.
 
 import shelve
