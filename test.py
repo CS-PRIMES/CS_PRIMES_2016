@@ -17,8 +17,13 @@ import time
 def create_linear_graphs(n): # creates all linear PTC graphs up to n.
     print "***************"
     print "Running create_linear_graphs(" + str(n) + ", starting at " + str(datetime.datetime.now()) + "."
+    start_generate = time.time()
     all_linear_graphs = shelve.open('all_linear_graphs.txt', writeback=True)
     linear_ptc.linear_PTC(n, all_linear_graphs)
+    end_generate = time.time()
+    print "Vertices in created graph: " + str(linear_ptc.linear_ptcsize(n))
+    print "Total seconds elapsed: " + str(end_generate - start_generate)
+    print "Vertices generated per second: " + str(linear_ptc.linear_ptcsize(n) / (end_generate - start_generate))
     print "create_linear_graphs(" + str(n) + "), completed at " + str(datetime.datetime.now()) + "."
     print "***************"
     all_linear_graphs.close()
@@ -26,8 +31,13 @@ def create_linear_graphs(n): # creates all linear PTC graphs up to n.
 def create_butterfly_graphs(n): # creates all butterfly PTC graphs up to n.
     print "***************"
     print "Running create_butterfly_graphs(" + str(n) + "), starting at " + str(datetime.datetime.now()) + "."
+    start_generate = time.time()
     all_graphs = shelve.open('all_graphs.txt', writeback=True)
     ptc.PTC(n, all_graphs)
+    end_generate = time.time()
+    print "Vertices in created graph: " + str(ptc.ptcsize(n))
+    print "Total seconds elapsed: " + str(end_generate - start_generate)
+    print "Vertices generated per second: " + str(ptc.ptcsize(n) - (end_generate - start_generate))
     print "create_butterfly_graphs(" + str(n) + ") completed at " + str(datetime.datetime.now()) + "."
     print "***************"
     all_graphs.close()

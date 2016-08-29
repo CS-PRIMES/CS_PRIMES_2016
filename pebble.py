@@ -9,7 +9,7 @@ class PebbleGraph:
     
     def __init__(self, r, pre_generated_graph=0, debug=False):
         # set pre_generated_graph to be True if the file all_graphs already contains all the neccessary parents on your computer.
-        self.all_graphs = shelve.open('all_graphs.txt', writeback=True)                # all_graphs contains the parents of every single ptc graph up to size r.
+        self.all_graphs = shelve.open('all_graphs.txt', writeback=True)
         self.pebble_value = open('pebble_value.txt', 'r+')
         self.num_pebbles = 0                                           # num_pebbles is the number of pebbles currently on the graph.
         self.max_pebbles = 0                                           # max_pebbles it the maximum number of pebbles that have been on the graph since the last reset.
@@ -142,3 +142,12 @@ class PebbleGraph:
             values.append(self.pebble_value.read(28))
         return values
 
+
+    def write_value(value, index):
+        # value should be exactly 28 bytes. value will be written to the place where the hash associated with the indexth pebble is.
+        self.pebble_value.seek(28 * index)
+        self.pebble_value.write(value)
+
+    def read_value(value, index): # value will be equal to what is read from the file.
+        self.pebble_value.seek(28 * index)
+        value = self.pebble_value.read(28)
