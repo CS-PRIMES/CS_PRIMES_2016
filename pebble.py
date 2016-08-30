@@ -6,6 +6,8 @@ import ptc
 import datetime
 
 class PebbleGraph:
+
+    hash_length = utils.hash_length()
     
     def __init__(self, r, pre_generated_graph=0, debug=False):
         # set pre_generated_graph to be True if the file all_graphs already contains all the neccessary parents on your computer.
@@ -18,7 +20,7 @@ class PebbleGraph:
             ptc.PTC(r, self.all_graphs)
         self.pebble_value.seek(0)
         for i in range(self.size()):
-            self.pebble_value.write('None' + 24 * '*')
+            self.pebble_value.write("\00"*hash_length)
         self.pebble_value.seek(0)
         self.debug = debug
 
@@ -29,16 +31,16 @@ class PebbleGraph:
     def is_pebbled(self, v):
         if v is None:
             return True
-        self.pebble_value.seek(v * 28)
-        if self.pebble_value.read(28) != 'None' + 24 * '*':
+        self.pebble_value.seek(v * hash_length)
+        if self.pebble_value.read(hash_length) != "\00"*hash_length:
             return True
         else:
             return False
 
     def remove_pebble(self, v):
         if(self.is_pebbled(v) and v is not None):
-            self.pebble_value.seek(v * 28)
-            self.pebble_value.write('None' + 24 * '*')
+            self.pebble_value.seek(v * hash_length)
+            self.pebble_value.write("\00"*hash_length)
             self.num_pebbles -= 1
             if (self.debug):
                 print "Pebble removed from node "+str(v)
@@ -50,7 +52,7 @@ class PebbleGraph:
     def reset(self):
         self.pebble_value.seek(0)
         for i in range(self.size()):
-            self.pebble_value.write ('None' + 24 * '*')
+            self.pebble_value.write("\00"*hash_length)
         self.num_pebbles = 0
         self.max_pebbles = 0
         if (self.debug):
@@ -62,7 +64,7 @@ class PebbleGraph:
                 return
             if not self.is_pebbled(v):
                 if self.is_source(v):
-                    self.pebble_value.seek(v * 28)
+                    self.pebble_value.seek(v * hash_length)
                     self.pebble_value.write(utils.secure_hash(str(v)))
                     self.num_pebbles += 1
                     if self.num_pebbles > self.max_pebbles:
@@ -70,9 +72,9 @@ class PebbleGraph:
                     if (self.debug):
                         print "Pebble added to node " + str(v)
                 elif self.is_pebbled(self.all_graphs[str(self.graph_num)][v][0]) and (self.all_graphs[str(self.graph_num)][v][1] is None):
-                    self.pebble_value.seek(28 * self.all_graphs[str(self.graph_num)][v][0])
-                    pre_hash = self.pebble_value.read(28)
-                    self.pebble_value.seek(28 * v)
+                    self.pebble_value.seek(hash_length * self.all_graphs[str(self.graph_num)][v][0])
+                    pre_hash = self.pebble_value.read(hash_length)
+                    self.pebble_value.seek(hash_length * v)
                     self.pebble_value.write(utils.secure_hash(pre_hash))
                     self.num_pebbles += 1
                     if self.num_pebbles > self.max_pebbles:
@@ -80,11 +82,11 @@ class PebbleGraph:
                     if (self.debug):
                         print "Pebble added to node " + str(v)
                 elif self.is_pebbled(self.all_graphs[str(self.graph_num)][v][0]) and self.is_pebbled(self.all_graphs[str(self.graph_num)][v][1]):
-                    self.pebble_value.seek(28 * self.all_graphs[str(self.graph_num)][v][0])
-                    first_prehash = self.pebble_value.read(28)
-                    self.pebble_value.seek(28 * self.all_graphs[str(self.graph_num)][v][1])
-                    second_prehash = self.pebble_value.read(28)
-                    self.pebble_value.seek(28 * v)
+                    self.pebble_value.seek(hash_length * self.all_graphs[str(self.graph_num)][v][0])
+                    first_prehash = self.pebble_value.read(hash_length)
+                    self.pebble_value.seek(hash_length * self.all_graphs[str(self.graph_num)][v][1])
+                    second_prehash = self.pebble_value.read(hash_length)
+                    self.pebble_value.seek(hash_length * v)
                     self.pebble_value.write(utils.secure_hash(first_prehash + second_prehash))
                     self.num_pebbles += 1
                     if self.num_pebbles > self.max_pebbles:
@@ -101,16 +103,16 @@ class PebbleGraph:
                 self.pebble_value.write(utils.secure_hash(str(v))) # There is no seek before.
                 # There is no code for setting self.max_pebbles, because this is not for testing code.
             elif self.all_graphs[str(self.graph_num)][v][1] == None: # has only one parent
-                self.pebble_value.seek(28 * self.all_graphs[str(self.graph_num)][v][0])
-                pre_hash = self.pebble_value.read(28)
-                self.pebble_value.seek(28 * v)
+                self.pebble_value.seek(hash_length * self.all_graphs[str(self.graph_num)][v][0])
+                pre_hash = self.pebble_value.read(hash_length)
+                self.pebble_value.seek(hash_length * v)
                 self.pebble_value.write(utils.secure_hash(pre_hash))
             else: # has two parents
-                self.pebble_value.seek(28 * self.all_graphs[str(self.graph_num)][v][0])
-                prehash = self.pebble_value.read(28)
-                self.pebble_value.seek(28 * self.all_graphs[str(self.graph_num)][v][1])
-                second_prehash = self.pebble_value.read(28)
-                self.pebble_value.seek(28 * v)
+                self.pebble_value.seek(hash_length * self.all_graphs[str(self.graph_num)][v][0])
+                prehash = self.pebble_value.read(hash_length)
+                self.pebble_value.seek(hash_length * self.all_graphs[str(self.graph_num)][v][1])
+                second_prehash = self.pebble_value.read(hash_length)
+                self.pebble_value.seek(hash_length * v)
                 self.pebble_value.write(utils.secure_hash(prehash + second_prehash))
             
             
@@ -135,26 +137,25 @@ class PebbleGraph:
     def stop_debug(self):
         self.debug = False
 
-    # Deprecated in commit 89    
-    # def list_values(self):
-    #     values = []
-    #     self.pebble_value.seek(0)
-    #     for i in range(self.size()):
-    #         values.append(self.pebble_value.read(28))
-    #     return values
+    def list_values(self): # I noticed that since values does not use persistent storage, this will fail for large graphs.
+        values = []
+        self.pebble_value.seek(0)
+        for i in range(self.size()):
+            values.append(self.pebble_value.read(hash_length))
+        return values
 
 
     def write_value(self, value, index):
-        # value should be exactly 28 bytes. value will be written to the place where the hash associated with the indexth pebble is.
-        self.pebble_value.seek(28 * index)
+        # value should be exactly hash_length bytes. value will be written to the place where the hash associated with the indexth pebble is.
+        self.pebble_value.seek(hash_length * index)
         self.pebble_value.write(value)
 
     def read_value(self, index): # value will be equal to what is read from the file.
-        self.pebble_value.seek(28 * index)
-        return self.pebble_value.read(28)
+        self.pebble_value.seek(hash_length * index)
+        return self.pebble_value.read(hash_length)
 
     def read_value_noseek(self):
-        return self.pebble_value.read(28)
+        return self.pebble_value.read(hash_length)
 
     def reset_seek(self):
-        self.pebble_value.seek(0)
+        self.pebble_value.seek(hash_length)
