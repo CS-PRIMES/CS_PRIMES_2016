@@ -135,19 +135,26 @@ class PebbleGraph:
     def stop_debug(self):
         self.debug = False
 
-    def list_values(self): # I noticed that since values does not use persistent storage, this will fail for large graphs.
-        values = []
-        self.pebble_value.seek(0)
-        for i in range(self.size()):
-            values.append(self.pebble_value.read(28))
-        return values
+    # Deprecated in commit 89    
+    # def list_values(self):
+    #     values = []
+    #     self.pebble_value.seek(0)
+    #     for i in range(self.size()):
+    #         values.append(self.pebble_value.read(28))
+    #     return values
 
 
-    def write_value(value, index):
+    def write_value(self, value, index):
         # value should be exactly 28 bytes. value will be written to the place where the hash associated with the indexth pebble is.
         self.pebble_value.seek(28 * index)
         self.pebble_value.write(value)
 
-    def read_value(value, index): # value will be equal to what is read from the file.
+    def read_value(self, index): # value will be equal to what is read from the file.
         self.pebble_value.seek(28 * index)
-        value = self.pebble_value.read(28)
+        return self.pebble_value.read(28)
+
+    def read_value_noseek(self):
+        return self.pebble_value.read(28)
+
+    def reset_seek(self):
+        self.pebble_value.seek(0)

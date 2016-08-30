@@ -31,7 +31,12 @@ class Prover:
 		# code to build MT
 		#self.mt = trees.MerkleNode(self.p.list_values())
 		self.mt = shelve.open(filename)
-		self.mt["leaf_values"] = self.p.list_values()
+		self.mt["leaf_values"] = [""]*self.p.size()
+		self.p.reset_seek()
+		print self.p.size()
+		for i in range(self.p.size()):
+			self.mt["leaf_values"][i] = self.p.read_value_noseek()
+		print len(self.mt["leaf_values"])
 		self.mt["leaf_keys"] = trees.MT([0, self.p.size()], self.mt, "")
 
 		if self.debug:
