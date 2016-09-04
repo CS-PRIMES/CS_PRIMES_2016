@@ -7,6 +7,7 @@ import linear_ptc
 class PebbleGraph:
     
     def __init__(self, r, pre_generated_graph=False, debug=False):
+        self.hash_length = utils.hash_length()
         self.all_graphs = shelve.open('all_linear_graphs.txt', writeback=True)                # all_graphs contains the parents of every single ptc graph up to size r.
         self.pebble_value = open('pebble_value.txt', 'r+')            # pebble_value stores the value of the hash associated with the pebble.
         self.num_pebbles = 0                                           # num_pebbles is the number of pebbles currently on the graph.
@@ -17,7 +18,7 @@ class PebbleGraph:
             linear_ptc.linear_PTC(r, self.all_graphs)
         self.pebble_value.seek(0)
         for i in range(self.size):
-            self.pebble_value.write('None' + 60 * '*')
+            self.pebble_value.write('\00' * self.hash_length)
         self.pebble_value.seek(0)
         self.debug = debug
         
@@ -28,16 +29,16 @@ class PebbleGraph:
     def is_pebbled(self, v):
         if v is None:
             return True
-        self.pebble_value.seek(v * 64)
-        if self.pebble_value.read(64) != 'None' + 60 * "*":
+        self.pebble_value.seek(v * self.hash_length)
+        if self.pebble_value.read(self.hash_length) != '\00' * self.hash_length:
             return True
         else:
             return False
         
     def remove_pebble(self, v):
         if(self.is_pebbled(v) and v is not None):
-            self.pebble_value.seek(64 * v)
-            self.pebble_value.write('None' + 60 * '*')
+            self.pebble_value.seek(self.hash_length * v)
+            self.pebble_value.write('\00' * self.hash_length)
             self.num_pebbles -= 1
             if (self.debug):
                 print "Pebble removed from node "+str(v)
@@ -49,7 +50,7 @@ class PebbleGraph:
     def reset(self):
         self.pebble_value.seek(0)
         for i in range(self.size):
-            self.pebble_value.write('None' + 60 * '*')
+            self.pebble_value.write('\00' * self.hash_length)
         self.num_pebbles = 0
         self.max_pebbles = 0
         if (self.debug):
@@ -61,7 +62,7 @@ class PebbleGraph:
                 return
             if not self.is_pebbled(v):
                 if self.is_source(v):
-                    self.pebble_value.seek(64 * v)
+                    self.pebble_value.seek(self.hash_length * v)
                     self.pebble_value.write(utils.secure_hash(str(v)))
                     self.num_pebbles += 1
                     if self.num_pebbles > self.max_pebbles:
@@ -73,14 +74,14 @@ class PebbleGraph:
                     error = 0
                     for i in range(7):
                         if self.all_graphs[str(self.graph_num)][v][i] != None:
-                            self.pebble_value.seek(64 * self.all_graphs[str(self.graph_num)][v][i])
-                            if self.pebble_value.read(64) =='None' + 60 * '*':
+                            self.pebble_value.seek(self.hash_length * self.all_graphs[str(self.graph_num)][v][i])
+                            if self.pebble_value.read(self.hash_length) =='\00' * self.hash_length:
                                 print "Error: Attempted to pebble node " + str(v) + "without pebbling parent " + str(i) + "."
                                 error = 1
                             else:
                                 prehash = prehash + str(self.pebble_value[str(self.all_graphs[str(self.graph_num)][v][i])])
                     if error == 0:
-                        self.pebble_value.seek(64 * v)
+                        self.pebble_value.seek(self.hash_length * v)
                         self.pebble_value.write(utils.secure_hash(str(v)))
                         self.num_pebbles += 1
                         if self.num_pebbles > self.max_pebbles:
@@ -100,9 +101,9 @@ class PebbleGraph:
                 prehash = ''
                 for i in range(7):
                     if parents[i] != None:
-                        self.pebble_value.seek(64 * parents[i])
-                        prehash = prehash + self.pebble_value.read(64)
-                self.pebble_value.seek(64 * v)
+                        self.pebble_value.seek(self.hash_length * parents[i])
+                        prehash = prehash + self.pebble_value.read(self.hash_length)
+                self.pebble_value.seek(self.hash_length * v)
                 self.pebble_value.write(utils.secure_hash(prehash))
                 
                 
@@ -152,6 +153,5 @@ class PebbleGraph:
         values = []
         self.pebble_value.seek(0)
         for i in range(self.size):
-            values.append(self.pebble_value.read(64))
+            values.append(self.pebble_value.read(self.hash_length))
         return values
-
