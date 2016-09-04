@@ -137,13 +137,12 @@ class PebbleGraph:
     def stop_debug(self):
         self.debug = False
 
-    # Deprecated in commit 91
-    # def list_values(self): # I noticed that since values does not use persistent storage, this will fail for large graphs.
-    #     values = []
-    #     self.pebble_value.seek(0)
-    #     for i in range(self.size()):
-    #         values.append(self.pebble_value.read(hash_length))
-    #     return values
+    def list_values(self): # I noticed that since values does not use persistent storage, this will fail for large graphs.
+        values = []
+        self.pebble_value.seek(0)
+        for i in range(self.size()):
+            values.append(self.pebble_value.read(hash_length))
+        return values
 
 
     def write_value(self, value, index):
