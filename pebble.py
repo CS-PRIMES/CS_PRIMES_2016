@@ -5,7 +5,7 @@ import ptc
 
 class PebbleGraph:
 
-    def __init__(self, r, pre_generated_graph=0, debug=False):
+    def __init__(self, r, pre_generated_graph=False, debug=False):
         # set pre_generated_graph to be True if the file all_graphs already contains all the neccessary parents on your computer.
         self.hash_length = utils.hash_length()
         self.all_graphs = open('all_graphs.txt', 'r+')
@@ -13,7 +13,7 @@ class PebbleGraph:
         self.num_pebbles = 0                                           # num_pebbles is the number of pebbles currently on the graph.
         self.max_pebbles = 0                                           # max_pebbles it the maximum number of pebbles that have been on the graph since the last reset.
         self.graph_num = r
-        if pre_generated_graph == 0:
+        if not pre_generated_graph:
             all_graphs.seek(0)
             ptc.PTC(r, self.all_graphs)
         self.all_graphs_increment = len(str(ptc.ptcsize(self.graph_num))) # The number of bytes each parent in all_graphs takes

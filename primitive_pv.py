@@ -35,8 +35,9 @@ class Prover:
 		self.p.reset_seek()
 		print self.p.size()
 		for i in range(self.p.size()):
-			self.mt["leaf_values"][i] = self.p.read_value_noseek()
-		print len(self.mt["leaf_values"])
+			self.mt["leaf_values"][i] = self.p.read_value_noseek() # self.mt["leaf_values"] are all unhashed
+			print self.mt["leaf_values"][i] # FOR DEBUGGING -- @john the problem is here; self.p.read_value_noseek() seems to return ""
+		# print len(self.mt["leaf_values"])
 		self.mt["leaf_keys"] = trees.MT([0, self.p.size()], self.mt, "")
 
 		if self.debug:

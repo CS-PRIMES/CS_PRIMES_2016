@@ -47,10 +47,10 @@ def primitive_pv_test(r, pre_gen_graph=False, debug=True):
     print "Running pv_test("+str(r)+"), starting at "+str(datetime.datetime.now())+"."
     
     print "Initializing prover..."
-    P = primitive_pv.Prover(r, pre_gen_graph=pre_gen_graph, debug=True)
+    P = primitive_pv.Prover(r, pre_gen_graph=pre_gen_graph, debug=debug)
     print "Prover initialization complete."
     print "Initializing verifier..."
-    V = primitive_pv.Verifier(r, debug=True)
+    V = primitive_pv.Verifier(r, debug=debug)
     V.set_prover(P)
     print "Verifier initialization complete."
     print "Commencing verification protocol."
