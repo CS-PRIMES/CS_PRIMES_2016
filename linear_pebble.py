@@ -160,4 +160,3 @@ class PebbleGraph:
         for i in range(self.size):
             values.append(self.pebble_value.read(self.hash_length))
         return values
-

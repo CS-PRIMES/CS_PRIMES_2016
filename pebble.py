@@ -169,3 +169,4 @@ class PebbleGraph:
 
     def reset_seek(self):
         self.pebble_value.seek(0)
+
