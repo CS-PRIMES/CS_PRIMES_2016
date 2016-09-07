@@ -1,6 +1,5 @@
 #!/usr/bin/python -t
 
-import shelve
 import utils
 import ptc
 
@@ -9,13 +8,17 @@ class PebbleGraph:
     def __init__(self, r, pre_generated_graph=0, debug=False):
         # set pre_generated_graph to be True if the file all_graphs already contains all the neccessary parents on your computer.
         self.hash_length = utils.hash_length()
-        self.all_graphs = shelve.open('all_graphs.txt', writeback=True)
+        self.all_graphs = open('all_graphs.txt', 'r+')
         self.pebble_value = open('pebble_value.txt', 'r+')
         self.num_pebbles = 0                                           # num_pebbles is the number of pebbles currently on the graph.
         self.max_pebbles = 0                                           # max_pebbles it the maximum number of pebbles that have been on the graph since the last reset.
         self.graph_num = r
         if pre_generated_graph == 0:
+            all_graphs.seek(0)
             ptc.PTC(r, self.all_graphs)
+        self.all_graphs_increment = len(str(ptc.ptcsize(self.graph_num))) # The number of bytes each parent in all_graphs takes
+        self.all_graphs_start = ptc.all_graphs_start(self.graph_num) # The position where the rth graph is stored in all_graphs.
+        self.all_graphs.seek(self.all_graphs_start + 2 * 2**self.graph_num * self.all_graphs_increment)
         self.pebble_value.seek(0)
         for i in range(self.size()):
             self.pebble_value.write("\00"*self.hash_length)
@@ -27,7 +30,7 @@ class PebbleGraph:
         self.all_graphs.close()
 
     def is_pebbled(self, v):
-        if v is None:
+        if v is '\00' * self.all_graphs_increment:
             return True
         self.pebble_value.seek(v * self.hash_length)
         if self.pebble_value.read(self.hash_length) != "\00"*self.hash_length:
@@ -36,7 +39,7 @@ class PebbleGraph:
             return False
 
     def remove_pebble(self, v):
-        if(self.is_pebbled(v) and v is not None):
+        if(self.is_pebbled(v) and v is not '\00' * self.all_graphs_increment):
             self.pebble_value.seek(v * self.hash_length)
             self.pebble_value.write("\00"*self.hash_length)
             self.num_pebbles -= 1
@@ -58,19 +61,23 @@ class PebbleGraph:
 
     def add_pebble(self, v):
         if self.debug:
-            if v is None:
+            if v is '\00' * self.all_graphs_increment:
                 return
+            parents = []
+            all_graphs.seek(self.all_graphs_start + 2 * self.all_graphs_increment * v)
+            parents.append(all_graphs.read(all_graphs_increment))
+            parents.append(all_graphs.read(all_graphs_increment))
             if not self.is_pebbled(v):
                 if self.is_source(v):
                     self.pebble_value.seek(v * self.hash_length)
-                    self.pebble_value.write(utils.secure_hash(str(v)))
+                    self.pebble_value.write(utils.secure_hash(utils.prehash_associated_with_source(v)))
                     self.num_pebbles += 1
                     if self.num_pebbles > self.max_pebbles:
                         self.max_pebbles = self.num_pebbles
                     if (self.debug):
                         print "Pebble added to node " + str(v)
-                elif self.is_pebbled(self.all_graphs[str(self.graph_num)][v][0]) and (self.all_graphs[str(self.graph_num)][v][1] is None):
-                    self.pebble_value.seek(self.hash_length * self.all_graphs[str(self.graph_num)][v][0])
+                elif self.is_pebbled(int(parents[0])) and (parents[1]) is '\00' * self.all_graphs_increment:
+                    self.pebble_value.seek(self.hash_length * int(parents[0]))
                     pre_hash = self.pebble_value.read(self.hash_length)
                     self.pebble_value.seek(self.hash_length * v)
                     self.pebble_value.write(utils.secure_hash(pre_hash))
@@ -79,10 +86,10 @@ class PebbleGraph:
                         self.max_pebbles = self.num_pebbles
                     if (self.debug):
                         print "Pebble added to node " + str(v)
-                elif self.is_pebbled(self.all_graphs[str(self.graph_num)][v][0]) and self.is_pebbled(self.all_graphs[str(self.graph_num)][v][1]):
-                    self.pebble_value.seek(self.hash_length * self.all_graphs[str(self.graph_num)][v][0])
+                elif self.is_pebbled(int(parents[0])) and self.is_pebbled(int(parents[1])):
+                    self.pebble_value.seek(self.hash_length * int(parents[0]))
                     first_prehash = self.pebble_value.read(self.hash_length)
-                    self.pebble_value.seek(self.hash_length * self.all_graphs[str(self.graph_num)][v][1])
+                    self.pebble_value.seek(self.hash_length * int(parents[1]))
                     second_prehash = self.pebble_value.read(self.hash_length)
                     self.pebble_value.seek(self.hash_length * v)
                     self.pebble_value.write(utils.secure_hash(first_prehash + second_prehash))
@@ -98,35 +105,40 @@ class PebbleGraph:
 
         else: # This is meant to run faster and to execute trivial_pebble_graph(). It won't detect errors in the code.
             if v < 2**self.graph_num: # is a source
-                self.pebble_value.write(utils.secure_hash(str(v))) # There is no seek before.
+                self.pebble_value.write(utils.secure_hash(utils.prehash_associated_with_source(v))) # There is no seek before.
+                return
                 # There is no code for setting self.max_pebbles, because this is not for testing code.
-            elif self.all_graphs[str(self.graph_num)][v][1] == None: # has only one parent
-                self.pebble_value.seek(self.hash_length * self.all_graphs[str(self.graph_num)][v][0])
-                pre_hash = self.pebble_value.read(self.hash_length)
-                self.pebble_value.seek(self.hash_length * v)
-                self.pebble_value.write(utils.secure_hash(pre_hash))
-            else: # has two parents
-                self.pebble_value.seek(self.hash_length * self.all_graphs[str(self.graph_num)][v][0])
+            parents = [self.all_graphs.read(self.all_graphs_increment), self.all_graphs.read(self.all_graphs_increment)]
+            if parents[1] == '\00' * self.all_graphs_increment: # has only one parent
+                self.pebble_value.seek(self.hash_length * int(parents[0]))
                 prehash = self.pebble_value.read(self.hash_length)
-                self.pebble_value.seek(self.hash_length * self.all_graphs[str(self.graph_num)][v][1])
+                self.pebble_value.seek(self.hash_length * v)
+                self.pebble_value.write(utils.secure_hash(prehash))
+            else: # has two parents
+                self.pebble_value.seek(self.hash_length * int(parents[0]))
+                prehash = self.pebble_value.read(self.hash_length)
+                self.pebble_value.seek(self.hash_length * int(parents[1]))
                 second_prehash = self.pebble_value.read(self.hash_length)
                 self.pebble_value.seek(self.hash_length * v)
                 self.pebble_value.write(utils.secure_hash(prehash + second_prehash))
-            
-            
+
     def is_source(self, v):
-        return (self.all_graphs[str(self.graph_num)][v][0] == None and self.all_graphs[str(self.graph_num)][v][1] == None)
+        self.all_graphs.seek(self.all_graphs_start + self.all_graphs_increment * v * 2)
+        return (self.all_graphs.read(2 * all_graphs_increment) == '\00' * 2 * all_graphs_increment)
 
     def get_parents(self, v):
-        return self.all_graphs[str(self.graph_num)][v]
+        self.all_graphs.seek(self.all_graphs_start + self.all_graphs_increment * v  * 2)
+        parents = [self.all_graphs.read(all_graphs_increment), self.all_graphs.read(all_graphs_increment)]
+        return parents
 
     def size(self):
         return ptc.ptcsize(self.graph_num)
 
     def print_graph(self):
+        self.all_graphs.seek(self.all_graphs_start)
         print "[",
         for i in range(self.size()):
-            print "[" + str(self.all_graphs[str(self.graph_num)][i][0]) + ", " + str(self.all_graphs[str(self.graph_num)][i][1]) + "]",
+            print "[" + self.all_graphs.read(self.all_graphs_increment) + ", " + self.all_graphs.read(self.all_graphs_increment) + "]",
         print "]"
 
     def start_debug(self):
@@ -156,4 +168,5 @@ class PebbleGraph:
         return self.pebble_value.read(self.hash_length)
 
     def reset_seek(self):
-        self.pebble_value.seek(self.hash_length)
+        self.pebble_value.seek(0)
+

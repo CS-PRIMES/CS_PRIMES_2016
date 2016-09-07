@@ -1,4 +1,4 @@
-import pebble, pebbling_algos, trees, primitive_pv, linear_pebble, ptc, shelve, linear_ptc
+import pebble, pebbling_algos, trees, primitive_pv, linear_pebble, ptc, linear_ptc
 import datetime
 import sys
 import re
@@ -18,7 +18,7 @@ def create_linear_graphs(n): # creates all linear PTC graphs up to n.
     print "***************"
     print "Running create_linear_graphs(" + str(n) + "), starting at " + str(datetime.datetime.now()) + "."
     start_generate = time.time()
-    all_linear_graphs = shelve.open('all_linear_graphs.txt', writeback=True)
+    all_linear_graphs = open('all_linear_graphs.txt', 'r+')
     linear_ptc.linear_PTC(n, all_linear_graphs)
     end_generate = time.time()
     print "Vertices in created graph: " + str(linear_ptc.linear_ptcsize(n))
@@ -32,7 +32,7 @@ def create_butterfly_graphs(n): # creates all butterfly PTC graphs up to n.
     print "***************"
     print "Running create_butterfly_graphs(" + str(n) + "), starting at " + str(datetime.datetime.now()) + "."
     start_generate = time.time()
-    all_graphs = shelve.open('all_graphs.txt', writeback=True)
+    all_graphs = open('all_graphs.txt', 'r+')
     ptc.PTC(n, all_graphs)
     end_generate = time.time()
     print "Vertices in created graph: " + str(ptc.ptcsize(n))
@@ -42,12 +42,12 @@ def create_butterfly_graphs(n): # creates all butterfly PTC graphs up to n.
     print "***************"
     all_graphs.close()
 
-def primitive_pv_test(r):
+def primitive_pv_test(r, pre_gen_graph=False, debug=True):
     print "***************"
     print "Running pv_test("+str(r)+"), starting at "+str(datetime.datetime.now())+"."
     
     print "Initializing prover..."
-    P = primitive_pv.Prover(r, debug=True)
+    P = primitive_pv.Prover(r, pre_gen_graph=pre_gen_graph, debug=True)
     print "Prover initialization complete."
     print "Initializing verifier..."
     V = primitive_pv.Verifier(r, debug=True)

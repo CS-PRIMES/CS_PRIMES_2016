@@ -20,12 +20,12 @@ import random # is this the right random number generator to use?
 filename = "merkle_tree.txt" # filename of the shelve storage file for Prover's MT
 
 class Prover:
-	def __init__(self, r, debug=False):
-		self.debug = debug
-		if self.debug:
-			print "P: Starting up."
-		self.r = r
-		self.p = pebble.PebbleGraph(r)
+        def __init__(self, r, pre_gen_graph=False, debug=False):
+                self.debug = debug
+                if self.debug:
+                        print "P: Starting up."
+                self.r = r
+		self.p = pebble.PebbleGraph(r, pre_generated_graph=pre_gen_graph)
 		pebbling_algos.trivial_pebble(self.p, self.p.size()-1)
 
 		# code to build MT
@@ -125,3 +125,4 @@ class Opening:
 	def __init__(self, leaf_value, sibling_path):
 		self.leaf_value = leaf_value
 		self.sibling_path = sibling_path
+                
