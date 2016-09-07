@@ -1,3 +1,4 @@
+
 import pebble
 import utils
 import ptc
@@ -14,17 +15,19 @@ def trivial_pebble(P, i):
 def linear_trivial_pebble(graph):
     position = 0
     while (position < graph.size):
-        if graph.all_graphs[str(graph.graph_num)][position][6] == None:
+        graph.all_graphs.seek(graph.all_graphs_start + 7 * position * graph.all_graphs_increment + 6 * graph.all_graphs_increment)
+        last_parent = graph.all_graphs.read(graph.all_graphs_increment)
+        if last_parent == "\00" * graph.all_graphs_increment:
             for i in range(position, position + 128):
                 graph.add_pebble(i)
             position += 128
         # Only occurs if we are in the right vertices of an expander graph.
         else:
-            i = position + 2 * (graph.all_graphs[str(graph.graph_num)][position][6] - position) - 1
+            i = position + 2 * (last_parent - position) - 1
             while (i >= position):
                 graph.add_pebble(i)
                 i = i - 1
-            position += 2 * (graph.all_graphs[str(graph.graph_num)][position][6] - position)
+            position += 2 * (last_parent - position)
 
     
 # DEPTH-FIRST PEBBLE METHOD, as described in page 10 of the PTC paper.

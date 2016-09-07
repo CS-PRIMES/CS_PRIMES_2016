@@ -1,18 +1,16 @@
-import shelve
-
 # File that stores superconcentrator implementations
-
-# function that is used in PTC generation
-def gen(r, addend, parents):
-    return butterfly(r, addend, parents)
+import ptc
 
 def butterfly(r, addend, parents):
-    numvertices = r * 2 * (2 ** r)
+    numvertices = r * 2 * 2**r
+    increment = len(str(ptc.ptcsize(r+1)))
 
+    # We do not add the sources to the superconcentrator graph, as they are added in ptc.py
+    """
     for i in range(2**r):
-        parents[str(i)] = [None, None]
-    # None signifies the lack of a parent
-
+        parents.write("\00" * 2 * increment)
+    # z signifies the lack of a parent
+    """
 
     # We store the parents as: [Parent directly below vertex, parent below and to the side of vertex.]
     for vertex in range (2**r, numvertices):
@@ -27,14 +25,12 @@ def butterfly(r, addend, parents):
         # shift represents how far to the right or left the child is
         # of its parent.
         if (column-1) % (2*shift) < shift:
-            # This occurs if the shift from child to parent is to the
-            # right.
-            parents[str(vertex)] = [addend + vertex - 2**r, addend + vertex - 2**r + shift]
+            # This occurs if the shift from child to parent is to the right.
+            first_leading_zero = increment - len(str(addend + vertex - 2**r))
+            second_leading_zero = increment - len(str(addend + vertex - 2**r + shift))
+            parents.write("0" * first_leading_zero + str(addend + vertex - 2**r) + "0" * second_leading_zero + str(addend + vertex - 2**r + shift))
         else:
-            # This occurs if the shift from child to parent is to the
-            # left.
-            parents[str(vertex)] = [addend + vertex - 2**r, addend + vertex - 2**r - shift]
-
-    return parents
-
-
+            # This occurs if the shift from child to parent is to the left.
+            first_leading_zero = increment - len(str(addend + vertex - 2**r))
+            second_leading_zero = increment - len(str(addend + vertex - 2**r - shift))
+            parents.write("0" * first_leading_zero + str(addend + vertex - 2**r) + "0" * second_leading_zero + str(addend + vertex - 2**r - shift))
