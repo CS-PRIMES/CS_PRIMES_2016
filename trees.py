@@ -7,9 +7,9 @@ def MT(leaf_range, shelf, key, prehashed=False): # recursively generates merkle 
 	value = None
 	if size == 1: # if it is a leaf
 		if prehashed:
-			value = shelf["leaf_values"][leaf_range[0]]
+			value = shelf["leaf"+str(leaf_range[0])]
 		else:
-			value = utils.secure_hash(shelf["leaf_values"][leaf_range[0]])
+			value = utils.secure_hash(shelf["leaf"+str(leaf_range[0])])
 		shelf[key] = [value, leaf_range, True]
 		return [key]
 	else:
