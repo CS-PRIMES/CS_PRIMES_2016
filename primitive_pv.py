@@ -31,13 +31,11 @@ class Prover:
 		# code to build MT
 		#self.mt = trees.MerkleNode(self.p.list_values())
 		self.mt = shelve.open(filename)
-		self.mt["leaf_values"] = [""]*self.p.size()
 		self.p.reset_seek()
 		print self.p.size()
 		for i in range(self.p.size()):
-			self.mt["leaf_values"][i] = self.p.read_value_noseek() # self.mt["leaf_values"] are all unhashed
-			print self.mt["leaf_values"][i] # FOR DEBUGGING -- @john the problem is here; self.p.read_value_noseek() seems to return ""
-		# print len(self.mt["leaf_values"])
+			s = self.p.read_value_noseek()
+			self.mt["leaf"+str(i)] = s # these values are all unhashed
 		self.mt["leaf_keys"] = trees.MT([0, self.p.size()], self.mt, "")
 
 		if self.debug:
@@ -49,7 +47,7 @@ class Prover:
 		return self.mt[""][0]
 
 	def open(self, i):
-		leaf_value = utils.secure_hash(self.mt["leaf_values"][i])
+		leaf_value = utils.secure_hash(self.mt["leaf"+str(i)])
 		if self.debug:
 			print "P: Opening that vertex, which has value "+leaf_value
 		sibling_path = trees.mtopen(i, self.mt)
