@@ -106,20 +106,24 @@ class Solver:
 
     def update_proof(self):
         poll = xmlrpclib.ServerProxy("http://" + genIP(self.n+1) + ":8000/")
-        poll.addVote(self.public_key)
+        poll.add(self.proof)
         while not self.con_r:
             for a in self.neighbors:
-                try:
-                    print self.IP, "connecting to " + a
-                    proxy = xmlrpclib.ServerProxy("http://" + a + ":8000/")
-                    proxy_proof = proxy.send_proof()
-                    if self.quality(proxy_proof[0]) > self.quality(self.proof):
-                        poll.addVote(proxy_proof[1])
-                        print proxy_proof[1]
-                        poll.remVote(self.proof_signature)
-                        self.proof = proxy_proof[0]
-                        self.proof_signature = proxy_proof[1]
-                except Exception as err:
-                    print err
-                    print "Proof failed"
-                    pass
+                if not self.con_r:
+                    try:
+                        print self.IP, "connecting to " + a
+                        proxy = xmlrpclib.ServerProxy("http://" + a + ":8000/")
+                        proxy_proof = proxy.send_proof()
+                        if self.quality(proxy_proof[0]) > self.quality(self.proof):
+                            poll.addVote(proxy_proof[0], self.proof)
+                            print proxy_proof[1]
+                            self.proof = proxy_proof[0]
+                            self.proof_signature = proxy_proof[1]
+                    except Exception as err:
+                        print err
+                        print "Proof failed"
+                        pass
+                else:
+                    break
+                time.sleep(0.05)
+                    
