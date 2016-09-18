@@ -14,7 +14,7 @@ import time
 
 # TEST FUNCTIONS (Feel free to add more)
 
-def create_linear_graphs(n): # creates all linear PTC graphs up to n.
+def create_linear_graphs(n): # creates all linear PTC graphs up to and including n.
     print "***************"
     print "Running create_linear_graphs(" + str(n) + "), starting at " + str(datetime.datetime.now()) + "."
     start_generate = time.time()
@@ -28,7 +28,7 @@ def create_linear_graphs(n): # creates all linear PTC graphs up to n.
     print "***************"
     all_linear_graphs.close()
         
-def create_butterfly_graphs(n): # creates all butterfly PTC graphs up to n.
+def create_butterfly_graphs(n): # creates all butterfly PTC graphs up to and including n.
     print "***************"
     print "Running create_butterfly_graphs(" + str(n) + "), starting at " + str(datetime.datetime.now()) + "."
     start_generate = time.time()
@@ -42,26 +42,37 @@ def create_butterfly_graphs(n): # creates all butterfly PTC graphs up to n.
     print "***************"
     all_graphs.close()
 
-def primitive_pv_test(r, pre_gen_graph=False, debug=True):
+def primitive_pv_test(r, pre_gen_graph=False, debug=False):
+    beginning_time = time.time()
     print "***************"
-    print "Running pv_test("+str(r)+"), starting at "+str(datetime.datetime.now())+"."
-    
-    print "Initializing prover..."
+    print "Running pv_test("+str(r)+"), starting at " + str(datetime.datetime.now()) + "."
+    if debug:
+        print "Initializing prover..."
     P = primitive_pv.Prover(r, pre_gen_graph=pre_gen_graph, debug=debug)
-    print "Prover initialization complete."
-    print "Initializing verifier..."
+    second_time = time.time()
+    P.create_merkle_tree()
+    third_time = time.time()
+    if debug:
+        print "Prover initialization complete."
+        print "Initializing verifier..."
     V = primitive_pv.Verifier(r, debug=debug)
     V.set_prover(P)
-    print "Verifier initialization complete."
-    print "Commencing verification protocol."
+    if debug:
+        print "Verifier initialization complete."
+        print "Commencing verification protocol."
     result = V.verify()
+    fourth_time = time.time()
     if result:
         print "Honest prover verified successfully."
     else:
         print "Verification failed; prover will be denied."
-
-    print "pv_test("+str(r)+") completed at "+str(datetime.datetime.now())+"."
-    print "***************"
+    print "Vertices in graph: " + str(ptc.ptcsize(r))
+    print "Seconds elapsed to generate/initialize PebbleGraph and pebble graph: " + str(second_time - beginning_time)
+    print "Seconds elapsed to create merkle tree: " + str(third_time - second_time)
+    print "Seconds elapsed to verify merkle tree: " + str(fourth_time - third_time)
+    print "Total seconds elapsed: " + str(fourth_time - beginning_time)
+    print "Total vertices / seconds elapsed: " + str(ptc.ptcsize(r) / (fourth_time - beginning_time))
+    print "primitive_pv_test("+str(r)+") completed at "+ str(datetime.datetime.now()) + "."
     P.close_files()
 
 def merkle_test(r):

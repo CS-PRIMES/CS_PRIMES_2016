@@ -6,7 +6,7 @@ def secure_hash(a):
     return x.digest()
 
 def hash_length():
-    return 64
+    return 64 # the sha 512 digest is 64 bytes
 
 def prehash_associated_with_source(v):
     return str(v)

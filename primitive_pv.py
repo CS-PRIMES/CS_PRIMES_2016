@@ -1,5 +1,6 @@
-import pebble, trees, pebbling_algos, utils
-import shelve
+import pebble
+import pebbling_algos
+import utils
 import random # is this the right random number generator to use?
 
 ##### PRIMITIVE PROVER/VERIFIER SETUP #####
@@ -17,8 +18,6 @@ import random # is this the right random number generator to use?
 # 	actually send over the sources, nor does he specifically check for the vali-
 #	dity of some fixed number of sources.
 
-filename = "merkle_tree.txt" # filename of the shelve storage file for Prover's MT
-
 class Prover:
         def __init__(self, r, pre_gen_graph=False, debug=False):
                 self.debug = debug
@@ -26,41 +25,47 @@ class Prover:
                         print "P: Starting up."
                 self.r = r
 		self.p = pebble.PebbleGraph(r, pre_generated_graph=pre_gen_graph)
-		pebbling_algos.trivial_pebble(self.p, self.p.size()-1)
+                self.ptc_size = self.p.size()
+		pebbling_algos.trivial_pebble(self.p, self.ptc_size-1)
 
-		# code to build MT
-		#self.mt = trees.MerkleNode(self.p.list_values())
-		self.mt = shelve.open(filename)
-		self.p.reset_seek()
-		print self.p.size()
-		for i in range(self.p.size()):
-			s = self.p.read_value_noseek()
-			self.mt["leaf"+str(i)] = s # these values are all unhashed
-		self.mt["leaf_keys"] = trees.MT([0, self.p.size()], self.mt, "")
+                self.merkle_tree_rows = 1
+                while(2**(self.merkle_tree_rows - 1) < self.ptc_size):
+                        self.merkle_tree_rows += 1
+                self.merkle_tree_size = 2**(self.merkle_tree_rows) - 2 # This is actually one less than the size. It actually stands for the number of the last node numbered 0 - n.
+
+                # Finishes filling bottom row of merkle tree.
+                self.p.pebble_value.seek(self.ptc_size * self.p.hash_length)
+		self.p.pebble_value.write("\00" * ((2**(self.merkle_tree_rows-1) - self.ptc_size) * self.p.hash_length))
+                self.merkle_root = ""
 
 		if self.debug:
 			print "P: Good to go, __init__ completed."
 
+        def create_merkle_tree(self):
+                # Creates merkle tree
+                vertex = 2**(self.merkle_tree_rows - 1) - 2
+                while vertex >= 0:
+                        self.p.pebble_value.seek((self.merkle_tree_size - (2*vertex + 2)) * self.p.hash_length)
+                        prehash = self.p.pebble_value.read(2 * self.p.hash_length) # reads both hash values at once!
+                        self.p.pebble_value.seek((self.merkle_tree_size - vertex) * self.p.hash_length)
+                        self.p.pebble_value.write(utils.secure_hash(prehash))
+                        vertex -= 1
+
+                # Finds merkle root
+                self.p.pebble_value.seek(self.merkle_tree_size * self.p.hash_length)
+                self.merkle_root = self.p.pebble_value.read(self.p.hash_length)
+                
+                        
 	def send_root(self):
 		if self.debug:
-			print "P: Sending over my Merkle root: "+self.mt[""][0] # "" is the key of the root, and [0] returns its value
-		return self.mt[""][0]
+			print "P: Sending over my Merkle root: "+self.merkle_root # "" is the key of the root, and [0] returns its value
+		return self.merkle_root
 
-	def open(self, i):
-		leaf_value = utils.secure_hash(self.mt["leaf"+str(i)])
-		if self.debug:
-			print "P: Opening that vertex, which has value "+leaf_value
-		sibling_path = trees.mtopen(i, self.mt)
-		if self.debug:
-			print "P: The sibling path is: "
-			print sibling_path
-		return Opening(leaf_value, sibling_path)
 
 	def close_files(self):
 		if self.debug:
 			print "P: Closing all my files.  Good night."
 		self.p.close_files()
-		self.mt.close()
 
 class Verifier:
 	# rroot is the received root from the prover -- verifier doesn't know for sure if the root is legitimate
@@ -70,10 +75,15 @@ class Verifier:
 		if self.debug:
 			print "V: Initializing."
 		self.r = r
-		self.n = 2*r # n is the number of vertices that the Verifier is going to open
+		self.n = 30 # n is the number of vertices that the Verifier is going to open
 		if self.debug:
 			print "V: Initialization complete."
 
+	def set_prover(self, prover):
+		self.prover = prover
+		if self.debug:
+			print "V: Prover set."
+                        
 	def verify(self):
 		if self.debug:
 			print "V: Time to verify.  I will be checking "+str(self.n)+" randomly chosen vertices."
@@ -82,7 +92,7 @@ class Verifier:
 			i = self.choose_vertex()
 			if self.debug:
 				print "V: Verification trial #"+str(x+1)+" -- vertex index "+str(i)+"."
-			result = self.verify_opening(self.prover.open(i))
+			result = self.verify_opening(i)
 			if self.debug:
 				if result:
 					print "V: Okay, you passed this one."
@@ -92,11 +102,6 @@ class Verifier:
 				return False
 		return True
 
-	def set_prover(self, prover):
-		self.prover = prover
-		if self.debug:
-			print "V: Prover set."
-
 	def choose_vertex(self):
 		return int(self.prover.p.size() * random.random())
 
@@ -105,23 +110,28 @@ class Verifier:
 		if self.debug:
 			print "V: Got your root."
 
-	def verify_opening(self, opening): # returns True for pass, False for fail
-		cur = opening.leaf_value
-		if self.debug:
-			print "V: Working my way up the Merkle tree..."
-		for x in opening.sibling_path: # recall that x is a two-element array of the form [sibling_value, sibling_path]
-			value = x[0]
-			key = x[1]
-			if key[-1] == 'R':
-				cur = utils.secure_hash(cur+value)
-			else:
-				cur = utils.secure_hash(value+cur)
-		if self.debug:
-			print "V: Calculated root value is "+cur
-		return cur == self.rroot
+        # Verifies opening node i in the PTC graph.
+	def verify_opening(self, i): # returns True for pass, False for fail
+                node_number = self.prover.merkle_tree_size - i
+                self.prover.p.pebble_value.seek(i *  self.prover.p.hash_length)
+                hash_of_node = self.prover.p.pebble_value.read(self.prover.p.hash_length)
 
-class Opening:
-	def __init__(self, leaf_value, sibling_path):
-		self.leaf_value = leaf_value
-		self.sibling_path = sibling_path
-                
+                row = self.prover.merkle_tree_rows
+                while (row > 1):
+                        if node_number % 2 == 0: # Node has a sibling to the right
+                                self.prover.p.pebble_value.seek((self.prover.merkle_tree_size - (node_number - 1)) * self.prover.p.hash_length)
+                                sibling = self.prover.p.pebble_value.read(self.prover.p.hash_length)
+                                node_number = node_number/2 - 1
+                                hash_of_node = utils.secure_hash(hash_of_node + sibling)
+                        else: # Node has a sibling to the left.
+                                self.prover.p.pebble_value.seek((self.prover.merkle_tree_size - (node_number + 1)) * self.prover.p.hash_length)
+                                sibling = self.prover.p.pebble_value.read(self.prover.p.hash_length)
+                                node_number = node_number/2
+                                hash_of_node = utils.secure_hash(sibling + hash_of_node)
+                                
+                        row = row - 1
+
+                if hash_of_node == self.prover.merkle_root:
+                        return True
+                else:
+                        return False
