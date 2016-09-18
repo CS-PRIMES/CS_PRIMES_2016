@@ -12,10 +12,11 @@ def P2P(n, d):
     net = Mininet(topo)
 
 #    net = Mininet()
-#    for i in range(1, n+1):
+#    for i in range(1, n+2):
 #        h = net.addHost('h' + str(i))
 #      
 #    for i in range(1, n+1):
+#        net.addLink(net.hosts[n], net.hosts[i-1])
 #        f = i
 #        for k in range(1, (d/2)+1):
 #            f += 1
@@ -43,7 +44,7 @@ def startCounter(h, n, d, start):
     h.cmd("python startCounter.py "+str(n)+" "+str(d)+" "+str(start))
 
 if __name__ == '__main__':
-#    setLogLevel('debug')
+    setLogLevel('debug')
     n = int(sys.argv[1])
     d = int(sys.argv[2])
     P2P(n, d)
