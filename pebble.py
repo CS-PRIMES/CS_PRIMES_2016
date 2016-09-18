@@ -20,8 +20,7 @@ class PebbleGraph:
         self.all_graphs_start = ptc.all_graphs_start(self.graph_num) # The position where the rth graph is stored in all_graphs.
         self.all_graphs.seek(self.all_graphs_start + 2 * 2**self.graph_num * self.all_graphs_increment)
         self.pebble_value.seek(0)
-        for i in range(self.size()):
-            self.pebble_value.write("\00"*self.hash_length)
+        self.pebble_value.write("\00"*self.hash_length * self.size())
         self.pebble_value.seek(0)
         self.debug = debug
 

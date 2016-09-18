@@ -1,5 +1,6 @@
+# This file is no longer used in our implementation of Proof of Space.
+
 import utils
-import shelve
 
 # shelf[key] = [value, leaf_range, isLeaf]
 def MT(leaf_range, shelf, key, prehashed=False): # recursively generates merkle tree
