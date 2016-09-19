@@ -98,6 +98,33 @@ class Verifier:
                         self.prover.p.all_graphs.seek(self.prover.p.all_graphs_start + self.prover.p.all_graphs_increment * i * 2)
                         parent1 = self.prover.p.all_graphs.read(self.prover.p.all_graphs_increment)
                         parent2 = self.prover.p.all_graphs.read(self.prover.p.all_graphs_increment)
+
+                        # Check to make sure parents hash to child.
+                        if parent1 != "\00" * self.prover.p.all_graphs_increment and parent2 != "\00" * self.prover.p.all_graphs_increment:
+                                # Has 2 parents
+                                self.prover.p.pebble_value.seek(i * self.prover.p.hash_length)
+                                this_vertex_hash = self.prover.p.pebble_value.read(self.prover.p.hash_length)
+                                self.prover.p.pebble_value.seek(int(parent1) * self.prover.p.hash_length)
+                                first_parent_hash = self.prover.p.pebble_value.read(self.prover.p.hash_length)
+                                self.prover.p.pebble_value.seek(int(parent2) * self.prover.p.hash_length)
+                                second_parent_hash = self.prover.p.pebble_value.read(self.prover.p.hash_length)
+                                if utils.secure_hash(first_parent_hash + second_parent_hash) != this_vertex_hash:
+                                        return False
+                        elif parent1 != "\00" * self.prover.p.all_graphs_increment:
+                                # Has 1 parents
+                                self.prover.p.pebble_value.seek(i * self.prover.p.hash_length)
+                                this_vertex_hash = self.prover.p.pebble_value.read(self.prover.p.hash_length)
+                                self.prover.p.pebble_value.seek(int(parent1) * self.prover.p.hash_length)
+                                first_parent_hash = self.prover.p.pebble_value.read(self.prover.p.hash_length)
+                                if utils.secure_hash(first_parent_hash) != this_vertex_hash:
+                                        return False
+                        else:
+                                # Is a source
+                                self.prover.p.pebble_value.seek(i * self.prover.p.hash_length)
+                                this_vertex_hash = self.prover.p.pebble_value.read(self.prover.p.hash_length)
+                                if utils.secure_hash(utils.prehash_associated_with_source(i)) != this_vertex_hash:
+                                        return False
+                                
                         if parent1 != "\00" * self.prover.p.all_graphs_increment:
                                 result2 = self.verify_opening(int(parent1))
                         else:
