@@ -3,6 +3,8 @@ import pebbling_algos
 import utils
 import random # is this the right random number generator to use?
 
+# trees.py is no longer used anywher in the code.
+
 ##### PRIMITIVE PROVER/VERIFIER SETUP #####
 # Prover pebbles PTC graph, generates Merkle tree, and sends root to Verifier
 # Verifier has Prover open n randomly chosen leaves of the MT, where n is
@@ -14,7 +16,7 @@ import random # is this the right random number generator to use?
 # 	wise, it outputs False.
 #
 # Note: in this version, Prover is completely honest (i.e. uses trivial_pebble)
-# 	and stores the value of every PTC vertex using shelve), Verifier does not
+# 	and stores the value of every PTC vertex using i/o file storage), Verifier does not
 # 	actually send over the sources, nor does he specifically check for the vali-
 #	dity of some fixed number of sources.
 
@@ -92,13 +94,24 @@ class Verifier:
 			i = self.choose_vertex()
 			if self.debug:
 				print "V: Verification trial #"+str(x+1)+" -- vertex index "+str(i)+"."
-			result = self.verify_opening(i)
+			result1 = self.verify_opening(i)
+                        self.prover.p.all_graphs.seek(self.prover.p.all_graphs_start + self.prover.p.all_graphs_increment * i * 2)
+                        parent1 = self.prover.p.all_graphs.read(self.prover.p.all_graphs_increment)
+                        parent2 = self.prover.p.all_graphs.read(self.prover.p.all_graphs_increment)
+                        if parent1 != "\00" * self.prover.p.all_graphs_increment:
+                                result2 = self.verify_opening(int(parent1))
+                        else:
+                                result2 = True
+                        if parent2 != "\00" * self.prover.p.all_graphs_increment:
+                                result3 = self.verify_opening(int(parent2))
+                        else:
+                                result3 = True
 			if self.debug:
 				if result:
 					print "V: Okay, you passed this one."
 				else:
 					print "V: ...which does NOT match your alleged root from earlier!"
-			if not result:
+			if result1 == False or result2 == False or result3 == False:
 				return False
 		return True
 

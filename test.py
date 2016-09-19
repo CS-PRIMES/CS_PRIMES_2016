@@ -73,6 +73,7 @@ def primitive_pv_test(r, pre_gen_graph=False, debug=False):
     print "Total seconds elapsed: " + str(fourth_time - beginning_time)
     print "Total vertices / seconds elapsed: " + str(ptc.ptcsize(r) / (fourth_time - beginning_time))
     print "primitive_pv_test("+str(r)+") completed at "+ str(datetime.datetime.now()) + "."
+    print "***************"
     P.close_files()
 
 def merkle_test(r):
