@@ -13,14 +13,16 @@ class PebbleGraph:
         self.num_pebbles = 0                                           # num_pebbles is the number of pebbles currently on the graph.
         self.max_pebbles = 0                                           # max_pebbles it the maximum number of pebbles that have been on the graph since the last reset.
         self.graph_num = r
+        self.size =  ptc.ptcsize(self.graph_num)
         if not pre_generated_graph:
             all_graphs.seek(0)
             ptc.PTC(r, self.all_graphs)
-        self.all_graphs_increment = len(str(ptc.ptcsize(self.graph_num))) # The number of bytes each parent in all_graphs takes
+        self.all_graphs_increment = len(str(self.size)) # The number of bytes each parent in all_graphs takes
         self.all_graphs_start = ptc.all_graphs_start(self.graph_num) # The position where the rth graph is stored in all_graphs.
         self.all_graphs.seek(self.all_graphs_start + 2 * 2**self.graph_num * self.all_graphs_increment)
         self.pebble_value.seek(0)
-        self.pebble_value.write("\00"*self.hash_length * self.size())
+        for i in range(self.size):
+            self.pebble_value.write("\00"*self.hash_length)
         self.pebble_value.seek(0)
         self.debug = debug
 
@@ -51,7 +53,7 @@ class PebbleGraph:
 
     def reset(self):
         self.pebble_value.seek(0)
-        for i in range(self.size()):
+        for i in range(self.size):
             self.pebble_value.write("\00"*self.hash_length)
         self.num_pebbles = 0
         self.max_pebbles = 0
@@ -130,13 +132,10 @@ class PebbleGraph:
         parents = [self.all_graphs.read(all_graphs_increment), self.all_graphs.read(all_graphs_increment)]
         return parents
 
-    def size(self):
-        return ptc.ptcsize(self.graph_num)
-
     def print_graph(self):
         self.all_graphs.seek(self.all_graphs_start)
         print "[",
-        for i in range(self.size()):
+        for i in range(self.size):
             print "[" + self.all_graphs.read(self.all_graphs_increment) + ", " + self.all_graphs.read(self.all_graphs_increment) + "]",
         print "]"
 
@@ -149,7 +148,7 @@ class PebbleGraph:
     def list_values(self): # I noticed that since values does not use persistent storage, this will fail for large graphs.
         values = []
         self.pebble_value.seek(0)
-        for i in range(self.size()):
+        for i in range(self.size):
             values.append(self.pebble_value.read(self.hash_length))
         return values
 

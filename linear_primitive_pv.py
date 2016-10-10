@@ -1,4 +1,4 @@
-import pebble
+import linear_pebble
 import pebbling_algos
 import utils
 import random # is this the right random number generator to use?
@@ -8,7 +8,7 @@ import random # is this the right random number generator to use?
 ##### PRIMITIVE PROVER/VERIFIER SETUP #####
 # Prover pebbles PTC graph, generates Merkle tree, and sends root to Verifier
 # Verifier has Prover open n randomly chosen leaves of the MT, where n is
-# 	defined in terms of r (currently it is set to n = 2*r)
+# 	defined in terms of r (currently it is set to n = 30, as recommended in SpaceMint and by Ling)
 # In each opening, Prover sends over an Opening object containing the leaf value
 # 	and the sibling path.  Verifier then uses the Opening to recalculate the
 # 	Merkle root, and compares it against the original one sent by Prover.
@@ -26,19 +26,18 @@ class Prover:
                 if self.debug:
                         print "P: Starting up."
                 self.r = r
-		self.p = pebble.PebbleGraph(r, pre_generated_graph=pre_gen_graph)
-                self.ptc_size = self.p.size
-		pebbling_algos.trivial_pebble(self.p, self.ptc_size-1)
+		self.p = linear_pebble.PebbleGraph(r, pre_generated_graph=pre_gen_graph)
+                pebbling_algos.linear_trivial_pebble(self.p)
 
                 self.merkle_tree_rows = 1
-                while(2**(self.merkle_tree_rows - 1) < self.ptc_size):
+                while(2**(self.merkle_tree_rows - 1) < self.p.size):
                         self.merkle_tree_rows += 1
                 self.merkle_tree_size = 2**(self.merkle_tree_rows) - 2 # This is actually one less than the size. It actually stands for the number of the last node numbered 0 - n.
 
                 # Finishes filling bottom row of merkle tree.
-                self.p.pebble_value.seek(self.ptc_size * self.p.hash_length)
-                for i in range(2**(self.merkle_tree_rows-1) - self.ptc_size):
-		        self.p.pebble_value.write("\00" * self.p.hash_length)
+                self.p.pebble_value.seek(self.p.size * self.p.hash_length)
+                for i in range(2**(self.merkle_tree_rows-1) - self.p.size):
+		    self.p.pebble_value.write("\00" * self.p.hash_length)
                 self.merkle_root = ""
 
 		if self.debug:
@@ -133,52 +132,4 @@ class Verifier:
                         return True
                 else:
                         return False
-
-
-# Code for phase 1 verification:
-#self.prover.p.all_graphs.seek(self.prover.p.all_graphs_start + self.prover.p.all_graphs_increment * i * 2)
-#parent1 = self.prover.p.all_graphs.read(self.prover.p.all_graphs_increment)
-#parent2 = self.prover.p.all_graphs.read(self.prover.p.all_graphs_increment)
-
-# Check to make sure parents hash to child.
-#if parent1 != "\00" * self.prover.p.all_graphs_increment and parent2 != "\00" * self.prover.p.all_graphs_increment:
-#        # Has 2 parents
-#        self.prover.p.pebble_value.seek(i * self.prover.p.hash_length)
-#        this_vertex_hash = self.prover.p.pebble_value.read(self.prover.p.hash_length)
-#        self.prover.p.pebble_value.seek(int(parent1) * self.prover.p.hash_length)
-#        first_parent_hash = self.prover.p.pebble_value.read(self.prover.p.hash_length)
-#        self.prover.p.pebble_value.seek(int(parent2) * self.prover.p.hash_length)
-#        second_parent_hash = self.prover.p.pebble_value.read(self.prover.p.hash_length)
-#        if utils.secure_hash(first_parent_hash + second_parent_hash) != this_vertex_hash:
-#                return False
-#elif parent1 != "\00" * self.prover.p.all_graphs_increment:
-#        # Has 1 parents
-#        self.prover.p.pebble_value.seek(i * self.prover.p.hash_length)
-#        this_vertex_hash = self.prover.p.pebble_value.read(self.prover.p.hash_length)
-#        self.prover.p.pebble_value.seek(int(parent1) * self.prover.p.hash_length)
-#        first_parent_hash = self.prover.p.pebble_value.read(self.prover.p.hash_length)
-#        if utils.secure_hash(first_parent_hash) != this_vertex_hash:
-#                return False
-#else:
-#        # Is a source
-#        self.prover.p.pebble_value.seek(i * self.prover.p.hash_length)
-#        this_vertex_hash = self.prover.p.pebble_value.read(self.prover.p.hash_length)
-#        if utils.secure_hash(utils.prehash_associated_with_source(i)) != this_vertex_hash:
-#                return False
-#        
-#if parent1 != "\00" * self.prover.p.all_graphs_increment:
-#        result2 = self.verify_opening(int(parent1))
-#else:
-#        result2 = True
-#if parent2 != "\00" * self.prover.p.all_graphs_increment:
-#        result3 = self.verify_opening(int(parent2))
-#else:
-#        result3 = True
-#if self.debug:
-#	if result:
-#		print "V: Okay, you passed this one."
-#	else:
-#		print "V: ...which does NOT match your alleged root from earlier!"
-#if result1 == False or result2 == False or result3 == False:
-#	return False
 

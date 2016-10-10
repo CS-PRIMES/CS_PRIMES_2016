@@ -13,7 +13,8 @@ def PTC(r, all_parents):
         ptc_size = ptcsize(graph_num-1)
 
         # Adds Sources
-        all_parents.write("\00\00" * graph_increment * 2**graph_num)
+        for i in range(2**graph_num):
+            all_parents.write("\00\00" * graph_increment)
                 
         # Adds 1st SC copy
         for i in range(2**(graph_num-1)):
