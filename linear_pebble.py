@@ -98,7 +98,7 @@ class PebbleGraph:
                 print "Error: Attempted to pebble node " + str(v) + " but it has already been pebbled"
 
         else: # This is not for testing, but to run linear_pebble_graph_trivial as fast as possible.
-            if v is "\00" * self.all_graphs_increment:
+            if v == "\00" * self.all_graphs_increment:
                 return
             if v < 64 * 2**self.graph_num:
                 self.pebble_value.write(utils.secure_hash(str(v)))

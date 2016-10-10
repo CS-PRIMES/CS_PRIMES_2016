@@ -1,4 +1,10 @@
-import pebble, pebbling_algos, trees, primitive_pv, linear_pebble, ptc, linear_ptc
+import pebbling_algos
+import primitive_pv
+import linear_primitive_pv
+import pebble
+import linear_pebble
+import ptc
+import linear_ptc
 import datetime
 import sys
 import re
@@ -42,6 +48,41 @@ def create_butterfly_graphs(n): # creates all butterfly PTC graphs up to and inc
     print "***************"
     all_graphs.close()
 
+def linear_primitive_pv_test(r, pre_gen_graph=False, debug=False):
+    beginning_time = time.time()
+    print "***************"
+    print "Running linear_pv_test("+str(r)+"), starting at " + str(datetime.datetime.now()) + "."
+    if debug:
+        print "Initializing prover..."
+    P = linear_primitive_pv.Prover(r, pre_gen_graph=pre_gen_graph, debug=debug)
+    second_time = time.time()
+    P.create_merkle_tree()
+    third_time = time.time()
+    if debug:
+        print "Prover initialization complete."
+        print "Initializing verifier..."
+    V = linear_primitive_pv.Verifier(r, debug=debug)
+    V.set_prover(P)
+    if debug:
+        print "Verifier initialization complete."
+        print "Commencing verification protocol."
+    result = V.verify()
+    fourth_time = time.time()
+    if result:
+        print "Honest prover verified successfully."
+    else:
+        print "Verification failed; prover will be denied."
+    print "Vertices in graph: " + str(linear_ptc.linear_ptcsize(r))
+    print "Seconds elapsed to generate/initialize PebbleGraph and pebble graph: " + str(second_time - beginning_time)
+    print "Seconds elapsed to create merkle tree: " + str(third_time - second_time)
+    print "Seconds elapsed to verify merkle tree: " + str(fourth_time - third_time)
+    print "Total seconds elapsed: " + str(fourth_time - beginning_time)
+    print "Total vertices / seconds elapsed: " + str(linear_ptc.linear_ptcsize(r) / (fourth_time - beginning_time))
+    print "linear_pv_test("+str(r)+") completed at "+ str(datetime.datetime.now()) + "."
+    print "***************"
+    P.close_files()
+
+    
 def primitive_pv_test(r, pre_gen_graph=False, debug=False):
     beginning_time = time.time()
     print "***************"
@@ -81,7 +122,7 @@ def merkle_test(r):
     print "Running merkle_test("+str(r)+"), starting at "+str(datetime.datetime.now())+"."
 
     p = pebble.PebbleGraph(r, debug=True)
-    pebbling_algos.trivial_pebble(p, p.size()-1)
+    pebbling_algos.trivial_pebble(p, p.size-1)
     print "Building Merkle tree..."
     mt = trees.MerkleNode(p.list_values())
     print "Merkle tree setup complete.  Root: "+mt.root()
@@ -95,7 +136,7 @@ def pebble_all_dfp(r):
     print("Running pebble_all_dfp("+str(r)+"), starting at "+str(datetime.datetime.now())+".")
 
     p = pebble.PebbleGraph(r, debug=True)
-    for i in range(p.size()):
+    for i in range(p.size):
         print("Pebbling vertex "+str(i))
         pebbling_algos.depth_first_pebble(p, i)
         if(p.is_pebbled(i)):
@@ -113,7 +154,7 @@ def pebble_all_trivial(r):
     print("Running pebble_all_trivial("+str(r)+").")
 
     p = pebble.PebbleGraph(r, debug=True)
-    for i in range(p.size()):
+    for i in range(p.size):
         print("Pebbling vertex "+str(i))
         pebbling_algos.trivial_pebble(p, i)
         if(p.is_pebbled(i)):
@@ -131,7 +172,7 @@ def pebble_sinks_dfp(r):
     print("Running pebble_sinks_dfp("+str(r)+"), starting at "+str(datetime.datetime.now())+".")
 
     p = pebble.PebbleGraph(r, debug=True)
-    for i in range(p.size()-2**r, p.size()): # just the sinks
+    for i in range(p.size-2**r, p.size): # just the sinks
         print("Pebbling vertex "+str(i))
         pebbling_algos.depth_first_pebble(p, i)
         if(p.is_pebbled(i)):
@@ -149,7 +190,7 @@ def pebble_sinks_trivial(r):
     print("Running pebble_sinks_trivial("+str(r)+"), starting at "+str(datetime.datetime.now())+".")
 
     p = pebble.PebbleGraph(r, debug=True)
-    for i in range(p.size()-2**r, p.size()): # just the sinks
+    for i in range(p.size-2**r, p.size): # just the sinks
         print("Pebbling vertex "+str(i))
         pebbling_algos.trivial_pebble(p, i)
         if(p.is_pebbled(i)):
@@ -182,18 +223,18 @@ def pebble_graph_trivial(r, pre_gen_graph=False, debug_flag=False):
     p = pebble.PebbleGraph(r, pre_generated_graph=pre_gen_graph, debug=debug_flag)
     end_generate = time.time()
     start_pebble = time.time()
-    pebbling_algos.trivial_pebble(p, p.size() - 1)
-    if p.is_pebbled(p.size() - 1):
+    pebbling_algos.trivial_pebble(p, p.size - 1)
+    if p.is_pebbled(p.size - 1):
         print "The final vertex in PTC(" + str(r) + ") was successfully pebbled."
     else:
         print "ERROR: The final vertex in PTC(" + str(r) + ") was not successfully pebbled."
-    print "Vertices in graph: " + str(p.size())
+    print "Vertices in graph: " + str(p.size)
     print "Seconds elapsed to generate graph: " + str(end_generate - start_generate)
-    print "Vertices generated per second: " + str(p.size() / (end_generate - start_generate))
+    print "Vertices generated per second: " + str(p.size / (end_generate - start_generate))
     print "Seconds elapsed to pebble graph: " + str(time.time() - start_pebble)
-    print "Vertices pebbled per second: " + str(p.size() / (time.time() - start_pebble))
+    print "Vertices pebbled per second: " + str(p.size / (time.time() - start_pebble))
     print "Total seconds elapsed: " + str(time.time() - start_generate)
-    print "Vertices generated and pebbled per second: " + str(p.size() / (time.time() - start_generate))
+    print "Vertices generated and pebbled per second: " + str(p.size / (time.time() - start_generate))
     print "pebble_graph_trivial(" + str(r) + ", pre_gen_graph=" + str(pre_gen_graph) + ") completed at " + str(datetime.datetime.now()) + "."
     print "***************"
     p.close_files()

@@ -1,4 +1,3 @@
-
 import pebble
 import utils
 import ptc
@@ -49,7 +48,7 @@ def dfp(P, v, S):
         if not P.is_pebbled(u):
             dfp(P, u, S | set(P.get_parents(v)))
     P.add_pebble(v)
-    P.remove_pebbles(set(range(P.size())) - S)
+    P.remove_pebbles(set(range(P.size)) - S)
 
 # LEVEL PEBBLE METHOD, intuitively graph level by level
 # v does nothing at this point

@@ -47,7 +47,7 @@ def expander_graph(n, addend, expander_parents, extra, beginning, graph_incremen
                 parents[g] += addend + extra
                 zeroes.append(graph_increment - len(str(parents[g])))
             if n > 128 and n + addend <= i and i < addend + n*3/2:
-                zeroes.append(graph_increment - (addend + extra + i + n/2))
+                zeroes.append(graph_increment - len(str(addend + extra + i + n/2)))
                 expander_parents.write("0" * zeroes[0] + str(parents[0]) + "0" * zeroes[1] + str(parents[1]) + "0" * zeroes[2] + str(parents[2]) +
                                        "0" * zeroes[3] + str(parents[3]) + "0" * zeroes[4] + str(parents[4]) + "0" * zeroes[5] + str(parents[5]) + "0" * zeroes[6] + str(addend + extra + i + n/2))
             else:

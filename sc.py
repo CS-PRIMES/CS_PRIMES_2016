@@ -6,11 +6,6 @@ def butterfly(r, addend, parents):
     increment = len(str(ptc.ptcsize(r+1)))
 
     # We do not add the sources to the superconcentrator graph, as they are added in ptc.py
-    """
-    for i in range(2**r):
-        parents.write("\00" * 2 * increment)
-    # z signifies the lack of a parent
-    """
 
     # We store the parents as: [Parent directly below vertex, parent below and to the side of vertex.]
     for vertex in range (2**r, numvertices):
