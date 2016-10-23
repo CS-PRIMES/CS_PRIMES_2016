@@ -10,8 +10,8 @@ if __name__ == '__main__':
 
     filename = re.sub(r':', '.', str(datetime.datetime.now()))
 
-#    sys.stdout = open("./con_test/(n="+str(n)+", d="+str(d)+") "+filename+".txt", "w")
-#    sys.stderr = sys.stdout
+    sys.stdout = open("./con_test/"+str(n)+", "+str(d)+" "+filename+".txt", "w")
+    sys.stderr = sys.stdout
 
     print "Starting test at " + str(datetime.datetime.now()) + "."
 

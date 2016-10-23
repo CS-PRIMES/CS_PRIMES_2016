@@ -10,6 +10,6 @@ if __name__ == '__main__':
     sys.stdout = open("./solver/h" + str(hostID) + ".txt", "w")
     sys.stderr = sys.stdout
 
-    s = solver.Solver(hostID, n, d, [15, 0, 1, 2, 3])
+    s = solver.Solver(hostID, n, d)
     
     print "Host h" + str(hostID) + " now running."

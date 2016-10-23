@@ -1,15 +1,26 @@
 from mininet.net import Mininet
 from mininet.node import Host
 from mininet.cli import CLI
-from mininet.topo import SingleSwitchTopo
+from mininet.topo import Topo
 from mininet.log import setLogLevel
+from mininet.link import TCLink
 import shelve, random, threading, time, sys
+
+class SingleSwitchTopo(Topo):
+        "Single switch connected to n hosts."
+        def build(self, n):
+            switch = self.addSwitch('s1')
+            for h in range(n):
+                # Each host gets 50%/n of system CPU
+                host = self.addHost('h%s' % (h + 1))
+                # 10 Mbps
+                self.addLink(host, switch, bw=100, delay='50ms')
 
 def P2P(n, d):
     "Adds n hosts, each with d neighbors"
 
     topo = SingleSwitchTopo(n+1)
-    net = Mininet(topo)
+    net = Mininet(topo=topo, link=TCLink)
 
 #    net = Mininet()
 #    for i in range(1, n+2):
@@ -44,7 +55,7 @@ def startCounter(h, n, d, start):
     h.cmd("python startCounter.py "+str(n)+" "+str(d)+" "+str(start))
 
 if __name__ == '__main__':
-    setLogLevel('debug')
+#    setLogLevel('debug')
     n = int(sys.argv[1])
     d = int(sys.argv[2])
     P2P(n, d)
