@@ -16,7 +16,7 @@ def linear_trivial_pebble(graph):
     while (position < graph.size):
         graph.all_graphs.seek(graph.all_graphs_start + 7 * position * graph.all_graphs_increment + 6 * graph.all_graphs_increment)
         last_parent = graph.all_graphs.read(graph.all_graphs_increment)
-        if last_parent == "\00" * graph.all_graphs_increment:
+        if last_parent == "z" * graph.all_graphs_increment:
             for i in range(position, position + 128):
                 graph.add_pebble(i)
             position += 128
