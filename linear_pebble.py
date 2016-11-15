@@ -15,12 +15,11 @@ class PebbleGraph:
         self.size = linear_ptc.linear_ptcsize(self.graph_num)
         if pre_generated_graph == False:
             linear_ptc.linear_PTC(r, self.all_graphs)
-        self.all_graphs_increment = len(str(linear_ptc.linear_ptcsize(self.graph_num))) # The number of bytes each parent in all_graphs takes.
+        self.all_graphs_increment = len(str(self.size)) # The number of bytes each parent in all_graphs occupies.
         self.all_graphs_start = linear_ptc.all_graphs_start(self.graph_num) # The position where the rth graph is stored in all_graphs.
-        self.all_graphs.seek(self.all_graphs_start + 7 * 2**(self.graph_num+6) * self.all_graphs_increment)
         self.pebble_value.seek(0)
         for i in range(self.size):
-            self.pebble_value.write("\00" * self.hash_length)
+            self.pebble_value.write("z" * self.hash_length)
         self.pebble_value.seek(0)
         self.debug = debug
         
@@ -29,18 +28,18 @@ class PebbleGraph:
         self.all_graphs.close()
 
     def is_pebbled(self, v):
-        if v is "\00" * self.all_graphs_increment:
+        if v is "z" * self.all_graphs_increment:
             return True
         self.pebble_value.seek(v * self.hash_length)
-        if self.pebble_value.read(self.hash_length) != "\00" * self.hash_length:
+        if self.pebble_value.read(self.hash_length) != "z" * self.hash_length:
             return True
         else:
             return False
         
     def remove_pebble(self, v):
-        if(self.is_pebbled(v) and v is not "\00" * self.all_graphs_increment):
+        if(self.is_pebbled(v) and v is not "z" * self.all_graphs_increment):
             self.pebble_value.seek(self.hash_length * v)
-            self.pebble_value.write("\00" * self.hash_length)
+            self.pebble_value.write("z" * self.hash_length)
             self.num_pebbles -= 1
             if (self.debug):
                 print "Pebble removed from node "+str(v)
@@ -52,7 +51,7 @@ class PebbleGraph:
     def reset(self):
         self.pebble_value.seek(0)
         for i in range(self.size):
-            self.pebble_value.write("\00" * self.hash_length)
+            self.pebble_value.write("z" * self.hash_length)
         self.num_pebbles = 0
         self.max_pebbles = 0
         if (self.debug):
@@ -60,7 +59,7 @@ class PebbleGraph:
 
     def add_pebble(self, v):
         if self.debug:
-            if v is "\00" * self.all_graphs_increment:
+            if v is "z" * self.all_graphs_increment:
                 return
             if not self.is_pebbled(v):
                 if self.is_source(v):
@@ -78,10 +77,10 @@ class PebbleGraph:
                     error = 0
                     for i in range(7):
                         parents.append(all_graphs.read(self.all_graphs_increment))
-                        if parents[i] != "\00" * self.all_graphs_increment:
+                        if parents[i] != "z" * self.all_graphs_increment:
                             self.pebble_value.seek(self.hash_length * parents[i])
                             parent_hash = self.pebble_value.read(hash_length)
-                            if parent_hash =="\00" * self.hash_length:
+                            if parent_hash =="z" * self.hash_length:
                                 print "Error: Attempted to pebble node " + str(v) + "without pebbling parent " + str(i) + "."
                                 error = 1
                             else:
@@ -98,18 +97,16 @@ class PebbleGraph:
                 print "Error: Attempted to pebble node " + str(v) + " but it has already been pebbled"
 
         else: # This is not for testing, but to run linear_pebble_graph_trivial as fast as possible.
-            if v == "\00" * self.all_graphs_increment:
-                return
             if v < 64 * 2**self.graph_num:
-                self.pebble_value.write(utils.secure_hash(str(v)))
+                self.pebble_value.write(utils.secure_hash(utils.prehash_associated_with_source(v)))
             else:
                 self.all_graphs.seek(self.all_graphs_start + self.all_graphs_increment * 7 * v)
                 prehash = ""
                 for i in range(7):
                     parent = self.all_graphs.read(self.all_graphs_increment)
-                    if parent != "\00" * self.all_graphs_increment:
+                    if parent != "z" * self.all_graphs_increment:
                         self.pebble_value.seek(self.hash_length * int(parent))
-                        prehash = prehash + self.pebble_value.read(self.hash_length)
+                        prehash += self.pebble_value.read(self.hash_length)
                 self.pebble_value.seek(self.hash_length * v)
                 self.pebble_value.write(utils.secure_hash(prehash))
                 
@@ -118,7 +115,7 @@ class PebbleGraph:
                 
     def is_source(self, v):
         self.all_graphs.seek(self.all_graphs_start + 7 * v * self.all_graphs_increment)
-        return self.all_graphs.read(self.all_graphs_increment * 7) == "\00" * self.all_graphs_increment * 7
+        return self.all_graphs.read(self.all_graphs_increment * 7) == "z" * self.all_graphs_increment * 7
 
     def get_parents(self, v):
         self.all_graphs.seek(self.all_graphs_start + self.all_graphs_increment * 7 * v)

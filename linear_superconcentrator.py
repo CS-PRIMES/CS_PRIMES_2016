@@ -34,10 +34,10 @@ def expander_graph(n, addend, expander_parents, extra, beginning, graph_incremen
 
     if beginning == 1:
         # Add the parents of the left vertices
-        if addend != 0: # If addend == 0 then the left vertices will be added in ptc.py
+        if addend != 0: # If addend == 0 then the left vertices will be added in linear_ptc.py
             for i in range(n):
                 leading_zero = graph_increment - len(str(extra + addend + n - 2*i))
-                expander_parents.write("0" * leading_zero + str(extra + addend + n - 2*i) + "\00" * 6 * graph_increment)
+                expander_parents.write("0" * leading_zero + str(extra + addend + n - 2*i) + "z" * 6 * graph_increment)
             
         # Add the parents of the right vertices
         for i in range(n):
@@ -52,17 +52,17 @@ def expander_graph(n, addend, expander_parents, extra, beginning, graph_incremen
                                        "0" * zeroes[3] + str(parents[3]) + "0" * zeroes[4] + str(parents[4]) + "0" * zeroes[5] + str(parents[5]) + "0" * zeroes[6] + str(addend + extra + i + n/2))
             else:
                 expander_parents.write("0" * zeroes[0] + str(parents[0]) + "0" * zeroes[1] + str(parents[1]) + "0" * zeroes[2] + str(parents[2]) +
-                                       "0" * zeroes[3] + str(parents[3]) + "0" * zeroes[4] + str(parents[4]) + "0" * zeroes[5] + str(parents[5]) + "\00" * graph_increment)
+                                       "0" * zeroes[3] + str(parents[3]) + "0" * zeroes[4] + str(parents[4]) + "0" * zeroes[5] + str(parents[5]) + "z" * graph_increment)
     else:
         # Add the parents of the left vertices
         for i in range(n/2):
             first_leading_zero = graph_increment - len(str(addend + extra + i - n/2))
             second_leading_zero = graph_increment - len(str(addend + extra + i - n/2 - linear_sc_size(n/2)))
-            expander_parents.write("0" * first_leading_zero + str(addend + extra + i - n/2) + "0" * second_leading_zero + str(addend + extra + i - n/2 - linear_sc_size(n/2)) + "\00" * 5 * graph_increment)
+            expander_parents.write("0" * first_leading_zero + str(addend + extra + i - n/2) + "0" * second_leading_zero + str(addend + extra + i - n/2 - linear_sc_size(n/2)) + "z" * 5 * graph_increment)
         for i in range(n/2, n):
             first_leading_zero = graph_increment - len(str(extra + addend + i - n/2))
             second_leading_zero = graph_increment - len(str(extra + addend + i - n*3/2 - linear_sc_size(i/2)))
-            expander_parents.write("0" * first_leading_zero + str(extra + addend + i - n/2) + "0" * second_leading_zero + str(extra + addend + i - n*3/2 - linear_sc_size(i/2)) + "\00" * 5 * graph_increment)
+            expander_parents.write("0" * first_leading_zero + str(extra + addend + i - n/2) + "0" * second_leading_zero + str(extra + addend + i - n*3/2 - linear_sc_size(i/2)) + "z" * 5 * graph_increment)
 
         # Add the parents of the right vertices
         for i in range(n):
@@ -72,7 +72,7 @@ def expander_graph(n, addend, expander_parents, extra, beginning, graph_incremen
                 parents[g] += addend + extra
                 zeroes.append(graph_increment - len(str(parents[g])))
             expander_parents.write("0" * zeroes[0] + str(parents[0]) + "0" * zeroes[1] + str(parents[1]) + "0" * zeroes[2] + str(parents[2]) +
-                                   "0" * zeroes[3] + str(parents[3]) + "0" * zeroes[4] + str(parents[4]) + "0" * zeroes[5] + str(parents[5]) + "\00" * graph_increment)
+                                   "0" * zeroes[3] + str(parents[3]) + "0" * zeroes[4] + str(parents[4]) + "0" * zeroes[5] + str(parents[5]) + "z" * graph_increment)
 
             
 def linear_sc_size(graph_num):

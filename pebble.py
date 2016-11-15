@@ -15,7 +15,7 @@ class PebbleGraph:
         self.graph_num = r
         self.size =  ptc.ptcsize(self.graph_num)
         if not pre_generated_graph:
-            all_graphs.seek(0)
+            self.all_graphs.seek(0)
             ptc.PTC(r, self.all_graphs)
         self.all_graphs_increment = len(str(self.size)) # The number of bytes each parent in all_graphs takes
         self.all_graphs_start = ptc.all_graphs_start(self.graph_num) # The position where the rth graph is stored in all_graphs.

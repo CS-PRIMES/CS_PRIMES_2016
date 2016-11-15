@@ -4,7 +4,6 @@ import linear_superconcentrator # file for superconcentrators
 
 # Notes:
 # 1. all_parents is the file in which the ptc graphs are stored.
-#     Remember, each key holds a two dimensional array.
 # 2. The first PTC graph (for r = 1) is an expander graph of total size 256.
 #     This first linear superconcentrator is also an expander graph of total size 256.
 
@@ -12,7 +11,7 @@ def linear_PTC(r, all_parents):
     all_parents.seek(0)
 
     graph_increment = len(str(linear_ptcsize(1)))
-    all_parents.write("\00" * 7 * graph_increment * 128)
+    all_parents.write("z" * 7 * graph_increment * 128)
     linear_superconcentrator.superconcentrator(128, 0, all_parents, graph_increment)
 
     for graph_num in range (2, r+1):
@@ -24,20 +23,20 @@ def linear_PTC(r, all_parents):
         ptc_size = linear_ptcsize(graph_num-1) # The size of the previous ptc graph.
             
         # Adds Sources
-        all_parents.write("\00" * 7 * graph_increment * 2**(graph_num+6))
+        all_parents.write("z" * 7 * graph_increment * 2**(graph_num+6))
                 
         # Adds 1st SC copy
         for i in range(2**(graph_num+5)):
             first_leading_zero = graph_increment - len(str(i))
             second_leading_zero = graph_increment - len(str(i + 2**(graph_num+5)))
-            all_parents.write("0" * first_leading_zero + str(i) + "0" * second_leading_zero + str(i + 2**(graph_num+5)) + "\00" * 5 * graph_increment)
+            all_parents.write("0" * first_leading_zero + str(i) + "0" * second_leading_zero + str(i + 2**(graph_num+5)) + "z" * 5 * graph_increment)
             
         linear_superconcentrator.superconcentrator(2**(graph_num+5), 2**(graph_num+6), all_parents, graph_increment)
 
         # Adds 1st PTC copy
         for i in range(2**(graph_num+5)):
             leading_zero = graph_increment - len(str(2**(graph_num+6) + sc_size - 2**(graph_num+5) + i))
-            all_parents.write("0" * leading_zero + str(2**(graph_num+6) + sc_size - 2**(graph_num+5) + i) + "\00" * graph_increment * 6)
+            all_parents.write("0" * leading_zero + str(2**(graph_num+6) + sc_size - 2**(graph_num+5) + i) + "z" * graph_increment * 6)
 
         for i in range(2**(graph_num+5), ptc_size):
             all_parents.seek(previous_graph_start + i * 7 * previous_graph_increment)
@@ -46,16 +45,17 @@ def linear_PTC(r, all_parents):
                 parents.append(all_parents.read(previous_graph_increment))
             all_parents.seek(graph_start + (2**(graph_num+6) + sc_size + i) * 7 * graph_increment)
             for g in range(7):
-                if parents[g] == "\00" * previous_graph_increment:
-                    all_parents.write("\00" * graph_increment)
+                if parents[g] == "z" * previous_graph_increment:
+                    all_parents.write("z" * graph_increment)
                 else:
-                    leading_zero = graph_increment - len(str(int(parents[g])))
-                    all_parents.write("0" * leading_zero + str(int(parents[g])))
+                    newparent = int(parents[g]) + 2**(graph_num+6) + sc_size
+                    leading_zero = graph_increment - len(str(newparent))
+                    all_parents.write("0" * leading_zero + str(newparent))
             
         # Adds 2nd PTC copy
         for i in range(2**(graph_num+5)):
             leading_zero = graph_increment - len(str(2**(graph_num+6) + sc_size + ptc_size - 2**(graph_num+5) + i))
-            all_parents.write("0" * leading_zero + str(2**(graph_num+6) + sc_size + ptc_size - 2**(graph_num+5) + i) + "\00" * graph_increment * 6)
+            all_parents.write("0" * leading_zero + str(2**(graph_num+6) + sc_size + ptc_size - 2**(graph_num+5) + i) + "z" * graph_increment * 6)
 
         for i in range(2**(graph_num+5),  ptc_size):
             all_parents.seek(previous_graph_start + i * 7 * previous_graph_increment)
@@ -64,16 +64,17 @@ def linear_PTC(r, all_parents):
                 parents.append(all_parents.read(previous_graph_increment))
             all_parents.seek(graph_start + (2**(graph_num+6) + sc_size + ptc_size + i) * 7 * graph_increment)
             for g in range(7):
-                if parents[g] == "\00" * previous_graph_increment:
-                    all_parents.write("\00" * graph_increment)
+                if parents[g] == "z" * previous_graph_increment:
+                    all_parents.write("z" * graph_increment)
                 else:
-                    leading_zero = graph_increment - len(str(int(parents[g])))
-                    all_parents.write("0" * leading_zero + str(int(parents[g])))
+                    newparent = int(parents[g]) + 2**(graph_num+6) + sc_size + ptc_size
+                    leading_zero = graph_increment - len(str(newparent))
+                    all_parents.write("0" * leading_zero + str(newparent))
                     
         # Adds 2nd SC copy
         for i in range(2**(graph_num+5)):
             leading_zero = graph_increment - len(str(2**(graph_num+6) + sc_size + ptc_size + ptc_size + i - 2**(graph_num+5)))
-            all_parents.write("0" * leading_zero + str(2**(graph_num+6) + sc_size + ptc_size + ptc_size + i - 2**(graph_num+5)) + "\00" * 6 * graph_increment)
+            all_parents.write("0" * leading_zero + str(2**(graph_num+6) + sc_size + ptc_size + ptc_size + i - 2**(graph_num+5)) + "z" * 6 * graph_increment)
 
         linear_superconcentrator.superconcentrator(2**(graph_num+5), 2**(graph_num+6) + sc_size + ptc_size + ptc_size, all_parents, graph_increment)
         
@@ -82,7 +83,7 @@ def linear_PTC(r, all_parents):
         for i in range(2**(graph_num+6)):
             first_leading_zero = graph_increment - len(str(sofar - 2**(graph_num+5) + (i % 2**(graph_num+5))))
             second_leading_zero = graph_increment - len(str(i))
-            all_parents.write("0" * first_leading_zero + str(sofar - 2**(graph_num+5) + (i % 2**(graph_num+5))) + "0" * second_leading_zero + str(i) + "\00" * 5 * graph_increment)
+            all_parents.write("0" * first_leading_zero + str(sofar - 2**(graph_num+5) + (i % 2**(graph_num+5))) + "0" * second_leading_zero + str(i) + "z" * 5 * graph_increment)
             
 def linear_ptcsize(r):
     # This returns the size of the rth ptc graph with linear superconcentrators.
