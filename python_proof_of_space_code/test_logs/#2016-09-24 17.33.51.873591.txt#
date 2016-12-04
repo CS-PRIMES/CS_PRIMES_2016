@@ -1,0 +1,225 @@
+Starting test at 2016-09-24 17:33:51.874071.
+***************
+Running create_butterfly_graphs(19), starting at 2016-09-24 17:33:51.874159.
+Vertices in created graph: 199229440
+Total seconds elapsed: 1247.28311992
+Vertices generated per second: 159730.727386
+create_butterfly_graphs(19) completed at 2016-09-24 17:54:39.157453.
+***************
+***************
+Running create_linear_graphs(14), starting at 2016-09-24 17:54:39.157627.
+Vertices in created graph: 125830656
+Total seconds elapsed: 1097.52709889
+Vertices generated per second: 114649.247501
+create_linear_graphs(14), completed at 2016-09-24 18:12:56.686743.
+***************
+***************
+Running pv_test(1), starting at 2016-09-24 18:12:56.686989.
+Honest prover verified successfully.
+Vertices in graph: 4
+Seconds elapsed to generate/initialize PebbleGraph and pebble graph: 0.00208401679993
+Seconds elapsed to create merkle tree: 4.6968460083e-05
+Seconds elapsed to verify merkle tree: 0.000646114349365
+Total seconds elapsed: 0.00277709960938
+Total vertices / seconds elapsed: 1440.35164835
+primitive_pv_test(1) completed at 2016-09-24 18:12:56.689842.
+***************
+***************
+Running pv_test(2), starting at 2016-09-24 18:12:56.689981.
+Honest prover verified successfully.
+Vertices in graph: 24
+Seconds elapsed to generate/initialize PebbleGraph and pebble graph: 0.000457048416138
+Seconds elapsed to create merkle tree: 0.000308036804199
+Seconds elapsed to verify merkle tree: 0.00132989883423
+Total seconds elapsed: 0.00209498405457
+Total vertices / seconds elapsed: 11455.9344486
+primitive_pv_test(2) completed at 2016-09-24 18:12:56.692123.
+***************
+***************
+Running pv_test(3), starting at 2016-09-24 18:12:56.692208.
+Honest prover verified successfully.
+Vertices in graph: 96
+Seconds elapsed to generate/initialize PebbleGraph and pebble graph: 0.0014340877533
+Seconds elapsed to create merkle tree: 0.00135493278503
+Seconds elapsed to verify merkle tree: 0.00174999237061
+Total seconds elapsed: 0.00453901290894
+Total vertices / seconds elapsed: 21149.9728963
+primitive_pv_test(3) completed at 2016-09-24 18:12:56.696803.
+***************
+***************
+Running pv_test(4), starting at 2016-09-24 18:12:56.696906.
+Honest prover verified successfully.
+Vertices in graph: 320
+Seconds elapsed to generate/initialize PebbleGraph and pebble graph: 0.00489592552185
+Seconds elapsed to create merkle tree: 0.00558495521545
+Seconds elapsed to verify merkle tree: 0.00951409339905
+Total seconds elapsed: 0.0199949741364
+Total vertices / seconds elapsed: 16004.0217015
+primitive_pv_test(4) completed at 2016-09-24 18:12:56.716975.
+***************
+***************
+Running pv_test(5), starting at 2016-09-24 18:12:56.717134.
+Honest prover verified successfully.
+Vertices in graph: 960
+Seconds elapsed to generate/initialize PebbleGraph and pebble graph: 0.0386409759521
+Seconds elapsed to create merkle tree: 0.0163581371307
+Seconds elapsed to verify merkle tree: 0.00240397453308
+Total seconds elapsed: 0.057403087616
+Total vertices / seconds elapsed: 16723.8390803
+primitive_pv_test(5) completed at 2016-09-24 18:12:56.774616.
+***************
+***************
+Running pv_test(6), starting at 2016-09-24 18:12:56.774785.
+Honest prover verified successfully.
+Vertices in graph: 2688
+Seconds elapsed to generate/initialize PebbleGraph and pebble graph: 0.0310781002045
+Seconds elapsed to create merkle tree: 0.0218169689178
+Seconds elapsed to verify merkle tree: 0.0090959072113
+Total seconds elapsed: 0.0619909763336
+Total vertices / seconds elapsed: 43361.1496217
+primitive_pv_test(6) completed at 2016-09-24 18:12:56.836863.
+***************
+***************
+Running pv_test(7), starting at 2016-09-24 18:12:56.837023.
+Honest prover verified successfully.
+Vertices in graph: 7168
+Seconds elapsed to generate/initialize PebbleGraph and pebble graph: 0.0572500228882
+Seconds elapsed to create merkle tree: 0.0408549308777
+Seconds elapsed to verify merkle tree: 0.00363111495972
+Total seconds elapsed: 0.101736068726
+Total vertices / seconds elapsed: 70456.8211628
+primitive_pv_test(7) completed at 2016-09-24 18:12:56.938849.
+***************
+***************
+Running pv_test(8), starting at 2016-09-24 18:12:56.939010.
+Honest prover verified successfully.
+Vertices in graph: 18432
+Seconds elapsed to generate/initialize PebbleGraph and pebble graph: 0.122153997421
+Seconds elapsed to create merkle tree: 0.168427944183
+Seconds elapsed to verify merkle tree: 0.00814700126648
+Total seconds elapsed: 0.298728942871
+Total vertices / seconds elapsed: 61701.4200996
+primitive_pv_test(8) completed at 2016-09-24 18:12:57.237831.
+***************
+***************
+Running pv_test(9), starting at 2016-09-24 18:12:57.237994.
+Honest prover verified successfully.
+Vertices in graph: 46080
+Seconds elapsed to generate/initialize PebbleGraph and pebble graph: 0.299654006958
+Seconds elapsed to create merkle tree: 0.342190980911
+Seconds elapsed to verify merkle tree: 0.00768208503723
+Total seconds elapsed: 0.649527072906
+Total vertices / seconds elapsed: 70943.9250835
+primitive_pv_test(9) completed at 2016-09-24 18:12:57.887608.
+***************
+***************
+Running pv_test(10), starting at 2016-09-24 18:12:57.887770.
+Honest prover verified successfully.
+Vertices in graph: 112640
+Seconds elapsed to generate/initialize PebbleGraph and pebble graph: 0.701188802719
+Seconds elapsed to create merkle tree: 0.684671163559
+Seconds elapsed to verify merkle tree: 0.00289988517761
+Total seconds elapsed: 1.38875985146
+Total vertices / seconds elapsed: 81108.3355282
+primitive_pv_test(10) completed at 2016-09-24 18:12:59.276624.
+***************
+***************
+Running pv_test(11), starting at 2016-09-24 18:12:59.276784.
+Honest prover verified successfully.
+Vertices in graph: 270336
+Seconds elapsed to generate/initialize PebbleGraph and pebble graph: 1.72926306725
+Seconds elapsed to create merkle tree: 2.79400110245
+Seconds elapsed to verify merkle tree: 0.00332188606262
+Total seconds elapsed: 4.52658605576
+Total vertices / seconds elapsed: 59721.8293589
+primitive_pv_test(11) completed at 2016-09-24 18:13:03.803463.
+***************
+***************
+Running pv_test(12), starting at 2016-09-24 18:13:03.803624.
+Honest prover verified successfully.
+Vertices in graph: 638976
+Seconds elapsed to generate/initialize PebbleGraph and pebble graph: 4.04138278961
+Seconds elapsed to create merkle tree: 5.50254607201
+Seconds elapsed to verify merkle tree: 0.00348997116089
+Total seconds elapsed: 9.54741883278
+Total vertices / seconds elapsed: 66926.5705414
+primitive_pv_test(12) completed at 2016-09-24 18:13:13.351140.
+***************
+***************
+Running pv_test(13), starting at 2016-09-24 18:13:13.351301.
+Honest prover verified successfully.
+Vertices in graph: 1490944
+Seconds elapsed to generate/initialize PebbleGraph and pebble graph: 9.53992009163
+Seconds elapsed to create merkle tree: 11.085162878
+Seconds elapsed to verify merkle tree: 0.00450706481934
+Total seconds elapsed: 20.6295900345
+Total vertices / seconds elapsed: 72272.109989
+primitive_pv_test(13) completed at 2016-09-24 18:13:33.981022.
+***************
+***************
+Running pv_test(14), starting at 2016-09-24 18:13:33.981214.
+Honest prover verified successfully.
+Vertices in graph: 3440640
+Seconds elapsed to generate/initialize PebbleGraph and pebble graph: 21.9619171619
+Seconds elapsed to create merkle tree: 22.0420088768
+Seconds elapsed to verify merkle tree: 0.0038480758667
+Total seconds elapsed: 44.0077741146
+Total vertices / seconds elapsed: 78182.5499976
+primitive_pv_test(14) completed at 2016-09-24 18:14:17.989085.
+***************
+***************
+Running pv_test(15), starting at 2016-09-24 18:14:17.989252.
+Honest prover verified successfully.
+Vertices in graph: 7864320
+Seconds elapsed to generate/initialize PebbleGraph and pebble graph: 50.5560059547
+Seconds elapsed to create merkle tree: 44.6295750141
+Seconds elapsed to verify merkle tree: 0.00392699241638
+Total seconds elapsed: 95.1895079613
+Total vertices / seconds elapsed: 82617.5086775
+primitive_pv_test(15) completed at 2016-09-24 18:15:53.178871.
+***************
+***************
+Running pv_test(16), starting at 2016-09-24 18:15:53.179036.
+Honest prover verified successfully.
+Vertices in graph: 17825792
+Seconds elapsed to generate/initialize PebbleGraph and pebble graph: 117.836482048
+Seconds elapsed to create merkle tree: 178.938132048
+Seconds elapsed to verify merkle tree: 0.00424194335938
+Total seconds elapsed: 296.778856039
+Total vertices / seconds elapsed: 60064.2250527
+primitive_pv_test(16) completed at 2016-09-24 18:20:49.960114.
+***************
+***************
+Running pv_test(17), starting at 2016-09-24 18:20:49.960307.
+Honest prover verified successfully.
+Vertices in graph: 40108032
+Seconds elapsed to generate/initialize PebbleGraph and pebble graph: 273.002969027
+Seconds elapsed to create merkle tree: 355.506916046
+Seconds elapsed to verify merkle tree: 0.00454211235046
+Total seconds elapsed: 628.514427185
+Total vertices / seconds elapsed: 63814.0196393
+primitive_pv_test(17) completed at 2016-09-24 18:31:18.474849.
+***************
+***************
+Running pv_test(18), starting at 2016-09-24 18:31:18.475010.
+Honest prover verified successfully.
+Vertices in graph: 89653248
+Seconds elapsed to generate/initialize PebbleGraph and pebble graph: 699.057813883
+Seconds elapsed to create merkle tree: 718.572293043
+Seconds elapsed to verify merkle tree: 0.033674955368
+Total seconds elapsed: 1417.66378188
+Total vertices / seconds elapsed: 63240.1343293
+primitive_pv_test(18) completed at 2016-09-24 18:54:56.143192.
+***************
+***************
+Running pv_test(19), starting at 2016-09-24 18:54:56.147810.
+Traceback (most recent call last):
+  File "foo.py", line 14, in <module>
+    test.primitive_pv_test(i, pre_gen_graph=True)
+  File "/home/john/CS_PRIMES_2016/test.py", line 92, in primitive_pv_test
+    P = primitive_pv.Prover(r, pre_gen_graph=pre_gen_graph, debug=debug)
+  File "/home/john/CS_PRIMES_2016/primitive_pv.py", line 29, in __init__
+    self.p = pebble.PebbleGraph(r, pre_generated_graph=pre_gen_graph)
+  File "/home/john/CS_PRIMES_2016/pebble.py", line 23, in __init__
+    self.pebble_value.write("\00"*self.hash_length * self.size())
+MemoryError
