@@ -9,9 +9,11 @@ class expanders:
 
     def __init__(self, n, k, pre_gen_graph=False, debug=False):
         # graph is partitioned into k sets of n vertices.
+        # Note: n must be at least 16!
         # This is described in "Proof of Space from Stacked Bipartite Graphs"
         self.n = n  
         self.k = k
+        self.size = n * k
         self.merkle_root = None
         self.hash_length = utils.hash_length()
         # parents stores the parents of V_2
@@ -27,6 +29,11 @@ class expanders:
         # Finally each C_1 through C_k is written into this file.
         # A merkle tree is created from these to find a single merkle root, C.
         self.merkle_tree = open('expander_merkle_tree.txt', 'r+')
+
+    def close_files(self):
+        self.parents.close()
+        self.pebble_value.close()
+        self.merkle_tree.close()
         
     def create_graph(self):
         self.parents.seek(0)
@@ -61,7 +68,7 @@ class expanders:
             for i in range(16):
                 self.pebble_value.seek(fill*self.n*self.hash_length + int(self.parents.read(self.parents_increment)))
                 prehash += self.pebble_value.read(self.hash_length)
-            self.pebble_value.seek(self.n * opp(fill) * self.hash_length + i * self.hash_length)
+            self.pebble_value.seek(self.n * self.opp(fill) * self.hash_length + i * self.hash_length)
             self.pebble_value.write(utils.secure_hash(prehash))
 
     # fill is either 0 or 1, depending on whether the merkle tree will
@@ -73,12 +80,12 @@ class expanders:
             power_of_two *= 2
         for i in range(power_of_two):
             if (2*i + 2 <= self.n):
-                self.pebble_value.seek(2*i*self.hash_length + self.hash_length*opp(fill)*self.n)
+                self.pebble_value.seek(2*i*self.hash_length + self.hash_length * self.opp(fill)*self.n)
                 prehash = self.pebble_value.read(2 * self.hash_length)
                 self.pebble_value.seek(i*self.hash_length + self.hash_length * fill * self.n)
                 self.pebble_value.write(utils.secure_hash(prehash))
             elif (2*i + 1 == self.n):
-                self.pebble_value.seek(2*i*self.hash_length + self.hash_length*opp(fill)*self.n)
+                self.pebble_value.seek(2*i*self.hash_length + self.hash_length*self.opp(fill)*self.n)
                 prehash = self.pebble_value.read(self.hash_length) + '\00' * self.hash_length
                 self.pebble_value.seek(i*self.hash_length + self.hash_length * fill * self.n)
                 self.pebble_value.write(utils.secure_hash(prehash))
@@ -129,7 +136,7 @@ class expanders:
         return self.merkle_tree.read(self.hash_length)
 
     # flips a bool that's 0 or 1
-    def opp(num):
+    def opp(self, num):
         if num == 0:
             return 1
         else:
