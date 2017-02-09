@@ -1,9 +1,8 @@
 # File that stores superconcentrator implementations
 import ptc
 
-def butterfly(r, addend, parents):
+def butterfly(r, addend, increment, parents):
     numvertices = r * 2 * 2**r
-    increment = len(str(ptc.ptcsize(r+1)))
 
     # We do not add the sources to the superconcentrator graph, as they are added in ptc.py
 

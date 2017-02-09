@@ -22,7 +22,7 @@ def PTC(r, all_parents):
             second_leading_zero = graph_increment - len(str(i + 2**(graph_num - 1)))
             all_parents.write("0" * first_leading_zero + str(i) + "0" * second_leading_zero + str(i + 2**(graph_num-1)))
 
-        sc.butterfly(graph_num-1, 2**graph_num, all_parents)
+        sc.butterfly(graph_num-1, 2**graph_num, graph_increment, all_parents)
             
             
         # Adds 1st PTC copy
@@ -66,7 +66,7 @@ def PTC(r, all_parents):
             first_leading_zero = graph_increment - len(str(2**graph_num + sc_size + ptc_size + ptc_size + i - 2**(graph_num-1)))
             all_parents.write("0" * first_leading_zero + str(2**graph_num + sc_size + ptc_size + ptc_size + i - 2**(graph_num-1)) + "\00" * graph_increment)
 
-        sc.butterfly(graph_num-1, 2**graph_num + sc_size + ptc_size + ptc_size, all_parents)
+        sc.butterfly(graph_num-1, 2**graph_num + sc_size + ptc_size + ptc_size, graph_increment, all_parents)
         
         # Adds Sinks
         sofar = 2**graph_num + 2 * sc_size + 2 * ptc_size
