@@ -1,8 +1,10 @@
+# 2016 CS PRIMES Group
+
 import sc # file for superconcentrators
 
 def PTC(r, all_parents):
     all_parents.seek(0)
-    all_parents.write("\00\00\00\00" + "0110") # Corresponds to [[None, None], [None, None], [0, 1], [1, 0]]
+    all_parents.write("zzzz" + "0110") # Corresponds to [[None, None], [None, None], [0, 1], [1, 0]]
     
     for graph_num in range (2, r+1):
         graph_start = all_graphs_start(graph_num)
@@ -14,7 +16,7 @@ def PTC(r, all_parents):
 
         # Adds Sources
         for i in range(2**graph_num):
-            all_parents.write("\00\00" * graph_increment)
+            all_parents.write("zz" * graph_increment)
                 
         # Adds 1st SC copy
         for i in range(2**(graph_num-1)):
@@ -28,7 +30,7 @@ def PTC(r, all_parents):
         # Adds 1st PTC copy
         for i in range(2**(graph_num-1)):
             leading_zeroes = graph_increment - len(str(2**graph_num + sc_size - 2**(graph_num-1) + i))
-            all_parents.write("0" * leading_zeroes + str(2**graph_num + sc_size - 2**(graph_num-1) + i) + "\00" * graph_increment)
+            all_parents.write("0" * leading_zeroes + str(2**graph_num + sc_size - 2**(graph_num-1) + i) + "z" * graph_increment)
 
         for i in range(2**(graph_num-1), ptc_size):
             all_parents.seek(previous_graph_start + 2 * previous_graph_increment * i)
@@ -37,8 +39,8 @@ def PTC(r, all_parents):
             parents.append(all_parents.read(previous_graph_increment))
             all_parents.seek(graph_start + (2**graph_num + sc_size + i) * graph_increment * 2)
             first_leading_zero = graph_increment - len(str(int(parents[0]) + 2**graph_num + sc_size))
-            if parents[1] == "\00" * previous_graph_increment:
-                all_parents.write("0" * first_leading_zero + str(int(parents[0]) + 2**graph_num + sc_size) + "\00" * graph_increment)
+            if parents[1] == "z" * previous_graph_increment:
+                all_parents.write("0" * first_leading_zero + str(int(parents[0]) + 2**graph_num + sc_size) + "z" * graph_increment)
             else:
                 second_leading_zero = graph_increment - len(str(int(parents[1]) + 2**graph_num + sc_size))
                 all_parents.write("0" * first_leading_zero + str(int(parents[0]) + 2**graph_num + sc_size) + "0" * second_leading_zero + str(int(parents[1]) + 2**graph_num + sc_size))
@@ -46,7 +48,7 @@ def PTC(r, all_parents):
         # Adds 2nd PTC copy
         for i in range(2**(graph_num-1)):
             leading_zeroes = graph_increment - len(str(2**graph_num + sc_size + ptc_size - 2**(graph_num-1) + i))
-            all_parents.write("0" * leading_zeroes + str(2**graph_num + sc_size  + ptc_size - 2**(graph_num-1) + i) + "\00" * graph_increment)
+            all_parents.write("0" * leading_zeroes + str(2**graph_num + sc_size  + ptc_size - 2**(graph_num-1) + i) + "z" * graph_increment)
             
         for i in range(2**(graph_num-1), ptc_size):
             all_parents.seek(previous_graph_start + 2 * previous_graph_increment * i)
@@ -55,8 +57,8 @@ def PTC(r, all_parents):
             parents.append(all_parents.read(previous_graph_increment))
             all_parents.seek(graph_start + (2**graph_num + sc_size + ptc_size + i) * graph_increment * 2)
             first_leading_zero = graph_increment - len(str(int(parents[0]) + 2**graph_num + sc_size + ptc_size))
-            if parents[1] == "\00" * previous_graph_increment:
-                all_parents.write("0" * first_leading_zero + str(int(parents[0]) + 2**graph_num + sc_size + ptc_size) + "\00" * graph_increment)
+            if parents[1] == "z" * previous_graph_increment:
+                all_parents.write("0" * first_leading_zero + str(int(parents[0]) + 2**graph_num + sc_size + ptc_size) + "z" * graph_increment)
             else:
                 second_leading_zero = graph_increment - len(str(int(parents[1]) + 2**graph_num + sc_size + ptc_size))
                 all_parents.write("0" * first_leading_zero + str(int(parents[0]) + 2**graph_num + sc_size + ptc_size) + "0" * second_leading_zero + str(int(parents[1]) + 2**graph_num + sc_size + ptc_size))
@@ -64,7 +66,7 @@ def PTC(r, all_parents):
         # Adds 2nd SC copy
         for i in range(2**(graph_num-1)):
             first_leading_zero = graph_increment - len(str(2**graph_num + sc_size + ptc_size + ptc_size + i - 2**(graph_num-1)))
-            all_parents.write("0" * first_leading_zero + str(2**graph_num + sc_size + ptc_size + ptc_size + i - 2**(graph_num-1)) + "\00" * graph_increment)
+            all_parents.write("0" * first_leading_zero + str(2**graph_num + sc_size + ptc_size + ptc_size + i - 2**(graph_num-1)) + "z" * graph_increment)
 
         sc.butterfly(graph_num-1, 2**graph_num + sc_size + ptc_size + ptc_size, all_parents)
         
