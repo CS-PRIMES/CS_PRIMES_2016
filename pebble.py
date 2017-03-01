@@ -22,7 +22,7 @@ class PebbleGraph:
         self.all_graphs.seek(self.all_graphs_start + 2 * 2**self.graph_num * self.all_graphs_increment)
         self.pebble_value.seek(0)
         for i in range(self.size):
-            self.pebble_value.write("\00"*self.hash_length)
+            self.pebble_value.write("z"*self.hash_length)
         self.pebble_value.seek(0)
         self.debug = debug
 
@@ -31,18 +31,18 @@ class PebbleGraph:
         self.all_graphs.close()
 
     def is_pebbled(self, v):
-        if v is '\00' * self.all_graphs_increment:
+        if v is 'z' * self.all_graphs_increment:
             return True
         self.pebble_value.seek(v * self.hash_length)
-        if self.pebble_value.read(self.hash_length) != "\00"*self.hash_length:
+        if self.pebble_value.read(self.hash_length) != "z"*self.hash_length:
             return True
         else:
             return False
 
     def remove_pebble(self, v):
-        if(self.is_pebbled(v) and v is not '\00' * self.all_graphs_increment):
+        if(self.is_pebbled(v) and v is not 'z' * self.all_graphs_increment):
             self.pebble_value.seek(v * self.hash_length)
-            self.pebble_value.write("\00"*self.hash_length)
+            self.pebble_value.write("z"*self.hash_length)
             self.num_pebbles -= 1
             if (self.debug):
                 print "Pebble removed from node "+str(v)
@@ -54,7 +54,7 @@ class PebbleGraph:
     def reset(self):
         self.pebble_value.seek(0)
         for i in range(self.size):
-            self.pebble_value.write("\00"*self.hash_length)
+            self.pebble_value.write("z"*self.hash_length)
         self.num_pebbles = 0
         self.max_pebbles = 0
         if (self.debug):
@@ -62,7 +62,7 @@ class PebbleGraph:
 
     def add_pebble(self, v):
         if self.debug:
-            if v is '\00' * self.all_graphs_increment:
+            if v is 'z' * self.all_graphs_increment:
                 return
             parents = []
             all_graphs.seek(self.all_graphs_start + 2 * self.all_graphs_increment * v)
@@ -77,7 +77,7 @@ class PebbleGraph:
                         self.max_pebbles = self.num_pebbles
                     if (self.debug):
                         print "Pebble added to node " + str(v)
-                elif self.is_pebbled(int(parents[0])) and (parents[1]) is '\00' * self.all_graphs_increment:
+                elif self.is_pebbled(int(parents[0])) and (parents[1]) is 'z' * self.all_graphs_increment:
                     self.pebble_value.seek(self.hash_length * int(parents[0]))
                     pre_hash = self.pebble_value.read(self.hash_length)
                     self.pebble_value.seek(self.hash_length * v)
@@ -110,7 +110,7 @@ class PebbleGraph:
                 return
                 # There is no code for setting self.max_pebbles, because this is not for testing code.
             parents = [self.all_graphs.read(self.all_graphs_increment), self.all_graphs.read(self.all_graphs_increment)]
-            if parents[1] == '\00' * self.all_graphs_increment: # has only one parent
+            if parents[1] == 'z' * self.all_graphs_increment: # has only one parent
                 self.pebble_value.seek(self.hash_length * int(parents[0]))
                 prehash = self.pebble_value.read(self.hash_length)
                 self.pebble_value.seek(self.hash_length * v)
@@ -125,7 +125,7 @@ class PebbleGraph:
 
     def is_source(self, v):
         self.all_graphs.seek(self.all_graphs_start + self.all_graphs_increment * v * 2)
-        return (self.all_graphs.read(2 * all_graphs_increment) == '\00' * 2 * all_graphs_increment)
+        return (self.all_graphs.read(2 * all_graphs_increment) == 'z' * 2 * all_graphs_increment)
 
     def get_parents(self, v):
         self.all_graphs.seek(self.all_graphs_start + self.all_graphs_increment * v  * 2)
